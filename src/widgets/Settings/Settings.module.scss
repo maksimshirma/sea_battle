@@ -1,0 +1,35 @@
+.container {
+    width: 300px;
+    height: 500px;
+
+    margin-top: 35px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .icons {
+        height: 25px;
+        padding: 10px;
+
+        .icon {
+            margin: 0 10px;
+
+            cursor: pointer;
+
+            svg {
+                fill: var(--font-main-color);
+            }
+        }
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .button {
+            padding: 10px 0;
+        }
+    }
+}

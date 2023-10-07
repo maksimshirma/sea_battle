@@ -7,8 +7,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-}
 
-.header {
-    font-size: 35px;
+    .header {
+        font-size: 35px;
+        color: var(--font-main-color);
+    }
 }

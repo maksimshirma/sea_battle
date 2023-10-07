@@ -1,13 +1,13 @@
 import styles from "./BattleBlock.module.scss";
 
-interface IProps {
-    value: number;
-}
+// interface IProps {
+//     value: number;
+// }
 
-const BattleBlock = ({ value }: IProps): JSX.Element => {
+const BattleBlock = (): JSX.Element => {
     return (
         <div className={styles.container}>
-            <span className={styles.item}>{value}</span>
+            <span className={styles.item}></span>
         </div>
     );
 };

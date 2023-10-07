@@ -1,33 +1,41 @@
 .select {
     position: relative;
-    font-size: 15px;
 
-    width: 150px;
-    height: 30px;
-    text-align: center;
+    width: 250px;
+    background-color: var(--btn-main-color);
+    padding: 10px 30px;
+
+    border: none;
+    border-radius: 10px;
+    color: inherit;
+
+    border: 1px solid var(--border-blocks-color);
+
+    cursor: pointer;
+
+    &:hover {
+        background-color: #cccccc;
+    }
 
     .select_title {
-        width: 100%;
-
-        background-color: #f3f3f3;
-        border: 1px solid gray;
-        border-radius: 15px;
-        margin-bottom: 5px;
-
-        cursor: pointer;
+        font-size: 17px;
+        color: var(--font-main-color);
     }
 
     .select_content {
-        width: 100%;
         position: absolute;
+        width: 100%;
+
+        font-size: 17px;
+        color: var(--font-main-color);
 
         left: 0;
-        bottom: -45px;
+        top: 0;
         z-index: 10;
 
-        background-color: #f3f3f3;
-        border: 1px solid gray;
-        border-radius: 15px;
+        background-color: var(--btn-main-color);
+
+        border-radius: 10px;
 
         .option {
             cursor: pointer;

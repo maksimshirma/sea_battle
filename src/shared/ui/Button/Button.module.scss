@@ -1,19 +1,22 @@
 .button {
     width: 250px;
-    background-color: #f3f3f3;
+    background-color: var(--btn-main-color);
     padding: 10px 30px;
 
     border: none;
     border-radius: 10px;
     color: inherit;
 
+    border: 1px solid var(--border-blocks-color);
+
     &:hover {
-        background-color: #cccccc;
+        background-color: var(--btn-active-color);
     }
 
     cursor: pointer;
 
     .content {
         font-size: 17px;
+        color: var(--font-main-color);
     }
 }

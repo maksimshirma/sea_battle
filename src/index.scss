@@ -10,8 +10,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
-
-    --board-size-desctop: 400px;
 }
 
 * {
@@ -28,6 +26,19 @@ input {
     -moz-appearance: none;
 }
 
+input::-webkit-input-placeholder {
+    color: inherit;
+}
+
 select::-ms-expand {
     display: none;
+}
+
+body {
+    --board-size-desctop: 400px;
+    --bg-main-color: #efefef;
+    --btn-main-color: #efefef;
+    --btn-active-color: #d9d9d9;
+    --font-main-color: #000;
+    --border-blocks-color: #2b00ff;
 }

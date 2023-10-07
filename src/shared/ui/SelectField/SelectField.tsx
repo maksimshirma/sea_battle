@@ -7,31 +7,36 @@ interface IOption {
 }
 
 interface IProps {
-    name: string;
     onChange: (value: string) => void;
     options: IOption[];
+    initialValue: string;
 }
 
-const SelectField = ({ options }: IProps): JSX.Element => {
-    const [mode, setMode] = useState<string>(options[0].value);
+const SelectField = ({
+    initialValue,
+    options,
+    onChange,
+}: IProps): JSX.Element => {
+    const [active, setActive] = useState<string>(initialValue);
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
-    const handleClick: MouseEventHandler<HTMLDivElement> = () => {
+    const handleClick: MouseEventHandler<HTMLButtonElement> = () => {
         setIsOpen((prev) => !prev);
     };
 
-    const handleChangeMode: MouseEventHandler<HTMLDivElement> = ({
+    const handleChangeActive: MouseEventHandler<HTMLDivElement> = ({
         currentTarget,
     }) => {
-        const newMode: string | undefined = currentTarget.dataset.state;
-        if (newMode && mode !== newMode) {
-            setMode(newMode);
+        const newActive: string | undefined = currentTarget.dataset.state;
+        if (newActive && active !== newActive) {
+            setActive(newActive);
+            onChange(newActive);
         }
     };
 
     return (
-        <div className={styles.select} onClick={handleClick}>
-            <div className={styles.select_title}>{mode}</div>
+        <button className={styles.select} onClick={handleClick}>
+            <span className={styles.select_title}>{active}</span>
             {isOpen && (
                 <div className={styles.select_content}>
                     {options &&
@@ -40,8 +45,8 @@ const SelectField = ({ options }: IProps): JSX.Element => {
                                 <div
                                     key={option.value}
                                     className={styles.option}
-                                    data-state={option.label}
-                                    onClick={handleChangeMode}
+                                    data-state={option.value}
+                                    onClick={handleChangeActive}
                                 >
                                     {option.value}
                                 </div>
@@ -49,7 +54,7 @@ const SelectField = ({ options }: IProps): JSX.Element => {
                         })}
                 </div>
             )}
-        </div>
+        </button>
     );
 };
 

@@ -1,25 +1,28 @@
 .container {
     width: var(--board-size-desctop);
-    height: 25px;
+    height: 27px;
 
     display: flex;
     justify-content: space-between;
 
     text-align: center;
 
-    background-color: #f3f3f3;
+    background-color: var(--bg-main-color);
 
     border-radius: 5px;
-}
+    border: 1px solid var(--border-blocks-color);
 
-.item {
-    font-size: 17px;
-}
+    .item {
+        font-size: 17px;
+        color: var(--font-main-color);
+        user-select: none;
+    }
 
-.item:first-child {
-    padding-left: 15px;
-}
+    .item:first-child {
+        padding-left: 16px;
+    }
 
-.item:last-child {
-    padding-right: 15px;
+    .item:last-child {
+        padding-right: 16px;
+    }
 }

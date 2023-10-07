@@ -1,0 +1,16 @@
+.container {
+    width: calc(var(--board-size-desctop) + 2px);
+    height: fit-content;
+
+    margin: 35px;
+
+    .info {
+        display: flex;
+        justify-content: space-between;
+
+        padding: 10px;
+
+        font-size: 17px;
+        color: var(--font-main-color);
+    }
+}

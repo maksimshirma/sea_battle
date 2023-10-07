@@ -1,13 +1,16 @@
+import ProvidersWrapper from "./providers/providers";
 import Game from "../pages/Game";
 import Header from "../widgets/Header";
-import styles from "./app.module.scss";
+import Layout from "../shared/ui/Layout/Layout";
 
 function App(): JSX.Element {
     return (
-        <div className={styles.container}>
-            <Header />
-            <Game />
-        </div>
+        <ProvidersWrapper>
+            <Layout>
+                <Header />
+                <Game />
+            </Layout>
+        </ProvidersWrapper>
     );
 }
 

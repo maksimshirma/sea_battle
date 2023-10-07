@@ -1,6 +1,7 @@
 .container {
     .input {
-        font-size: 17px;
+        font-size: var(--font-size-normal);
+        background-color: inherit;
         color: var(--font-main-color);
     }
 }

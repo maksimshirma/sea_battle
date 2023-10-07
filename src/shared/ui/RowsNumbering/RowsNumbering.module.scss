@@ -1,6 +1,6 @@
 .container {
-    height: var(--board-size-desctop);
-    width: 27px;
+    height: var(--board-size);
+    padding: 0 2px;
 
     display: flex;
     flex-direction: column;
@@ -14,16 +14,16 @@
     border: 1px solid var(--border-blocks-color);
 
     .item {
-        font-size: 17px;
+        font-size: var(--font-size-normal);
         color: var(--font-main-color);
         user-select: none;
     }
 
     .item:first-child {
-        padding-top: 7px;
+        padding-top: var(--rows-numbering-padding);
     }
 
     .item:last-child {
-        padding-bottom: 9px;
+        padding-bottom: var(--rows-numbering-padding);
     }
 }

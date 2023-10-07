@@ -1,7 +1,7 @@
 .button {
-    width: 250px;
+    width: var(--btn-width);
     background-color: var(--btn-main-color);
-    padding: 10px 30px;
+    padding: var(--btn-inner-padding);
 
     border: none;
     border-radius: 10px;
@@ -16,7 +16,7 @@
     cursor: pointer;
 
     .content {
-        font-size: 17px;
+        font-size: var(--font-size-normal);
         color: var(--font-main-color);
     }
 }

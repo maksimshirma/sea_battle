@@ -17,13 +17,13 @@ const Settings = (): JSX.Element => {
         <div className={styles.container}>
             <div className={styles.icons}>
                 <span className={styles.icon}>
-                    <Icons name="info" color="#000" size="30px" />
+                    <Icons name="info" color="#000" />
                 </span>
                 <span className={styles.icon} onClick={toggleTheme}>
                     {theme === "light" ? (
-                        <Icons name="sun" color="none" size="30px" />
+                        <Icons name="sun" color="none" />
                     ) : (
-                        <Icons name="moon" color="none" size="30px" />
+                        <Icons name="moon" color="none" />
                     )}
                 </span>
             </div>

@@ -9,7 +9,7 @@
     align-items: center;
 
     .header {
-        font-size: 35px;
+        font-size: var(--font-size-header);
         color: var(--font-main-color);
     }
 }

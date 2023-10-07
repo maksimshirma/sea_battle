@@ -1,6 +1,6 @@
 .container {
-    width: calc(var(--board-size-desctop) + 2px);
-    height: calc(var(--board-size-desctop) + 2px);
+    width: calc(var(--board-size) + 2px);
+    height: calc(var(--board-size) + 2px);
 
     display: flex;
     justify-content: center;
@@ -9,8 +9,8 @@
     position: relative;
 
     .board {
-        width: var(--board-size-desctop);
-        height: var(--board-size-desctop);
+        width: var(--board-size);
+        height: var(--board-size);
 
         border: 1px solid var(--border-blocks-color);
 

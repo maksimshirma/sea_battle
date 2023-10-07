@@ -1,7 +1,7 @@
 .select {
     position: relative;
 
-    width: 250px;
+    width: var(--btn-width);
     background-color: var(--btn-main-color);
     padding: 10px 30px;
 
@@ -18,7 +18,7 @@
     }
 
     .select_title {
-        font-size: 17px;
+        font-size: var(--font-size-normal);
         color: var(--font-main-color);
     }
 
@@ -26,7 +26,7 @@
         position: absolute;
         width: 100%;
 
-        font-size: 17px;
+        font-size: var(--font-size-normal);
         color: var(--font-main-color);
 
         left: 0;

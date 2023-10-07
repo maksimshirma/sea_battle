@@ -1,8 +1,8 @@
 .container {
-    width: calc(var(--board-size-desctop) + 2px);
+    width: calc(var(--board-size) + 2px);
     height: fit-content;
 
-    margin: 35px;
+    margin: 0 35px 35px 35px;
 
     .info {
         display: flex;
@@ -10,7 +10,7 @@
 
         padding: 10px;
 
-        font-size: 17px;
+        font-size: var(--font-size-normal);
         color: var(--font-main-color);
     }
 }

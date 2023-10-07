@@ -1,6 +1,6 @@
 .container {
-    width: calc(var(--board-size-desctop) / 10);
-    height: calc(var(--board-size-desctop) / 10);
+    width: calc(var(--board-size) / 10);
+    height: calc(var(--board-size) / 10);
 
     background-color: var(--bg-main-color);
 

@@ -1,0 +1,25 @@
+.container {
+    width: var(--board-size-desctop);
+    height: 25px;
+
+    display: flex;
+    justify-content: space-between;
+
+    text-align: center;
+
+    background-color: #f3f3f3;
+
+    border-radius: 5px;
+}
+
+.item {
+    font-size: 17px;
+}
+
+.item:first-child {
+    padding-left: 15px;
+}
+
+.item:last-child {
+    padding-right: 15px;
+}

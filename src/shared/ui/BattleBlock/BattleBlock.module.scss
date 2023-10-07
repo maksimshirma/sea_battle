@@ -1,0 +1,15 @@
+.container {
+    width: calc(var(--board-size-desctop) / 10);
+    height: calc(var(--board-size-desctop) / 10);
+
+    border: 1px solid black;
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.item {
+    font-size: 12px;
+}

@@ -10,9 +10,24 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
+
+    --board-size-desctop: 400px;
 }
 
 * {
     margin: 0;
     padding: 0;
+}
+
+select,
+input {
+    border: none;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+select::-ms-expand {
+    display: none;
 }

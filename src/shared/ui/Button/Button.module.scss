@@ -1,0 +1,19 @@
+.button {
+    width: 250px;
+    background-color: #f3f3f3;
+    padding: 10px 30px;
+
+    border: none;
+    border-radius: 10px;
+    color: inherit;
+
+    &:hover {
+        background-color: #cccccc;
+    }
+
+    cursor: pointer;
+
+    .content {
+        font-size: 17px;
+    }
+}

@@ -1,18 +1,19 @@
-import { useState } from "react";
 import Board from "../../shared/ui/Board";
 import TextField from "../../shared/ui/TextField";
 import styles from "./PlayGround.module.scss";
+import { useAppDispatch, useAppSelector } from "../../app/store/store";
+import { getUserName, setName } from "../../app/store/userSlice/userSlice";
 
 interface IProps {
     position: "left" | "right";
 }
 
 const PlayGround = ({ position }: IProps): JSX.Element => {
-    const [name, setName] = useState<string>("");
-    const [score] = useState<number>(20);
+    const name = useAppSelector(getUserName());
+    const dispatch = useAppDispatch();
 
     const handleChange = (value: string) => {
-        setName(value);
+        dispatch(setName(value));
     };
 
     return (
@@ -29,11 +30,11 @@ const PlayGround = ({ position }: IProps): JSX.Element => {
                                 placeholder="Введите имя..."
                             />
                         </div>
-                        <div className={styles.score}>{score}</div>
+                        <div className={styles.score}>20</div>
                     </>
                 ) : (
                     <>
-                        <div className={styles.score}>{score}</div>
+                        <div className={styles.score}>20</div>
                         <div className={styles.name}>Робот</div>
                     </>
                 )}

@@ -1,17 +1,30 @@
 import Button from "../../shared/ui/Button";
 import SelectField from "../../shared/ui/SelectField";
 import Icons from "../../shared/ui/Icons";
+import { useAppDispatch, useAppSelector } from "../../app/store/store";
+import { getTheme, changeTheme } from "../../app/store/userSlice/userSlice";
 import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
+    const theme = useAppSelector(getTheme());
+    const dispatch = useAppDispatch();
+
+    const toggleTheme = () => {
+        dispatch(changeTheme());
+    };
+
     return (
         <div className={styles.container}>
             <div className={styles.icons}>
                 <span className={styles.icon}>
                     <Icons name="info" color="#000" size="30px" />
                 </span>
-                <span className={styles.icon}>
-                    <Icons name="sun" color="none" size="30px" />
+                <span className={styles.icon} onClick={toggleTheme}>
+                    {theme === "light" ? (
+                        <Icons name="sun" color="none" size="30px" />
+                    ) : (
+                        <Icons name="moon" color="none" size="30px" />
+                    )}
                 </span>
             </div>
             <div className={styles.buttons}>

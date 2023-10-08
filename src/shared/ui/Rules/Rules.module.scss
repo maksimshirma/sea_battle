@@ -1,0 +1,32 @@
+.rules {
+    width: var(--rules-size);
+    height: var(--rules-size);
+
+    z-index: 100;
+
+    background-color: var(--bg-body-main-color);
+
+    border-radius: 15px;
+
+    border: 2px solid var(--border-blocks-color);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: scroll;
+
+    .header {
+        font-size: var(--font-size-header);
+        color: var(--font-main-color);
+    }
+
+    .content {
+        flex-grow: 1;
+    }
+
+    .header,
+    .footer {
+        padding: 5px;
+        text-align: center;
+    }
+}

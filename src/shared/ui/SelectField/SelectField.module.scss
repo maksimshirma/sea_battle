@@ -3,7 +3,7 @@
 
     width: var(--btn-width);
     background-color: var(--btn-main-color);
-    padding: 10px 30px;
+    padding: var(--btn-inner-padding);
 
     border: none;
     border-radius: 10px;

@@ -1,4 +1,6 @@
 body {
+    position: relative;
+
     --board-size: 400px;
     --settings-size: 300px;
     --btn-width: 250px;
@@ -9,23 +11,27 @@ body {
     --font-size-header: 35px;
     --columns-numbering-padding: 16px;
     --rows-numbering-padding: 8px;
+    --rules-size: 600px;
 }
 
 body.light-theme {
+    --bg-body-main-color: #fff;
     --bg-main-color: #efefef;
     --btn-main-color: #efefef;
-    --btn-active-color: #3d3c3c;
+    --btn-active-color: #adadad;
     --font-main-color: #000;
     --border-blocks-color: #2b00ff;
 }
 
 body.dark-theme {
-    background-color: #242424;
+    --bg-body-main-color: #242424;
     --bg-main-color: #474747;
     --btn-main-color: #474747;
     --btn-active-color: #5e5e5e;
     --font-main-color: #fff;
     --border-blocks-color: #2b00ff;
+
+    background-color: var(--bg-body-main-color);
 }
 
 @media (width < 1250px) {

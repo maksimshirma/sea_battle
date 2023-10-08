@@ -1,22 +1,38 @@
+import { useState } from "react";
+import { createPortal } from "react-dom";
 import Button from "../../shared/ui/Button";
 import SelectField from "../../shared/ui/SelectField";
 import Icons from "../../shared/ui/Icons";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import { getTheme, changeTheme } from "../../app/store/userSlice/userSlice";
+import Rules from "../../shared/ui/Rules";
 import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
     const theme = useAppSelector(getTheme());
     const dispatch = useAppDispatch();
 
+    const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
+
     const toggleTheme = () => {
         dispatch(changeTheme());
     };
 
+    const modalPortal = document.getElementById("modal-portal");
+
     return (
         <div className={styles.container}>
+            {isRulesOpen &&
+                modalPortal &&
+                createPortal(
+                    <Rules onClick={() => setIsRulesOpen(false)} />,
+                    modalPortal
+                )}
             <div className={styles.icons}>
-                <span className={styles.icon}>
+                <span
+                    className={styles.icon}
+                    onClick={() => setIsRulesOpen((prev) => !prev)}
+                >
                     <Icons name="info" color="#000" />
                 </span>
                 <span className={styles.icon} onClick={toggleTheme}>

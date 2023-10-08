@@ -1,15 +1,16 @@
 import { MouseEventHandler, useState } from "react";
+import { TModes } from "../../../app/store/gameSlice/gameSlice";
 import styles from "./SelectField.module.scss";
 
 interface IOption {
-    label: string;
+    label: TModes;
     value: string;
 }
 
 interface IProps {
-    onChange: (value: string) => void;
+    onChange: (value: IOption) => void;
     options: IOption[];
-    initialValue: string;
+    initialValue: IOption;
 }
 
 const SelectField = ({
@@ -17,7 +18,7 @@ const SelectField = ({
     options,
     onChange,
 }: IProps): JSX.Element => {
-    const [active, setActive] = useState<string>(initialValue);
+    const [active, setActive] = useState<IOption>(initialValue);
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = () => {
@@ -27,16 +28,17 @@ const SelectField = ({
     const handleChangeActive: MouseEventHandler<HTMLDivElement> = ({
         currentTarget,
     }) => {
-        const newActive: string | undefined = currentTarget.dataset.state;
-        if (newActive && active !== newActive) {
-            setActive(newActive);
-            onChange(newActive);
-        }
+        const label = currentTarget.dataset.label as TModes;
+        const newActive = options.find(
+            (el: IOption) => el.label === label
+        ) as IOption;
+        setActive(newActive);
+        onChange(newActive);
     };
 
     return (
         <button className={styles.select} onClick={handleClick}>
-            <span className={styles.select_title}>{active}</span>
+            <span className={styles.select_title}>{active.value}</span>
             {isOpen && (
                 <div className={styles.select_content}>
                     {options &&
@@ -45,7 +47,7 @@ const SelectField = ({
                                 <div
                                     key={option.value}
                                     className={styles.option}
-                                    data-state={option.value}
+                                    data-label={option.label}
                                     onClick={handleChangeActive}
                                 >
                                     {option.value}

@@ -6,17 +6,21 @@ import Icons from "../../shared/ui/Icons";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import { getTheme, changeTheme } from "../../app/store/userSlice/userSlice";
 import Rules from "../../shared/ui/Rules";
+import {
+    changeDifficulty,
+    changeMode,
+    getIsGameGoing,
+    startGame,
+    stopGame,
+} from "../../app/store/gameSlice/gameSlice";
 import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
     const theme = useAppSelector(getTheme());
+    const isGameGoing = useAppSelector(getIsGameGoing());
     const dispatch = useAppDispatch();
 
     const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
-
-    const toggleTheme = () => {
-        dispatch(changeTheme());
-    };
 
     const modalPortal = document.getElementById("modal-portal");
 
@@ -35,7 +39,10 @@ const Settings = (): JSX.Element => {
                 >
                     <Icons name="info" color="#000" />
                 </span>
-                <span className={styles.icon} onClick={toggleTheme}>
+                <span
+                    className={styles.icon}
+                    onClick={() => dispatch(changeTheme())}
+                >
                     {theme === "light" ? (
                         <Icons name="sun" color="none" />
                     ) : (
@@ -46,30 +53,35 @@ const Settings = (): JSX.Element => {
             <div className={styles.buttons}>
                 <div className={styles.button}>
                     <SelectField
-                        initialValue="Выберите режим"
-                        onChange={(v) => console.log(v)}
+                        initialValue={{
+                            label: "oneByOne",
+                            value: "По очереди",
+                        }}
+                        onChange={(option) =>
+                            dispatch(changeMode(option.label))
+                        }
                         options={[
-                            { label: "по очереди", value: "По очереди" },
-                            { label: "до промаха", value: "До промоха" },
+                            { label: "oneByOne", value: "По очереди" },
+                            { label: "toMiss", value: "До промоха" },
                         ]}
                     />
                 </div>
                 <div className={styles.button}>
                     <Button
                         content="Лёгкий"
-                        onClick={() => console.log("лёгкий")}
+                        onClick={() => dispatch(changeDifficulty("easy"))}
                     />
                 </div>
                 <div className={styles.button}>
                     <Button
                         content="Средний"
-                        onClick={() => console.log("средний")}
+                        onClick={() => dispatch(changeDifficulty("normal"))}
                     />
                 </div>
                 <div className={styles.button}>
                     <Button
                         content="Сложный"
-                        onClick={() => console.log("сложный")}
+                        onClick={() => dispatch(changeDifficulty("hard"))}
                     />
                 </div>
                 <div className={styles.button}>
@@ -85,10 +97,17 @@ const Settings = (): JSX.Element => {
                     />
                 </div>
                 <div className={styles.button}>
-                    <Button
-                        content="Играть"
-                        onClick={() => console.log("Играть")}
-                    />
+                    {isGameGoing ? (
+                        <Button
+                            content="Закончить"
+                            onClick={() => dispatch(stopGame())}
+                        />
+                    ) : (
+                        <Button
+                            content="Играть"
+                            onClick={() => dispatch(startGame())}
+                        />
+                    )}
                 </div>
             </div>
         </div>

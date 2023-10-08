@@ -6,27 +6,12 @@
     align-items: center;
 
     .icons {
-        height: 25px;
         padding: 10px;
-
-        .icon {
-            margin: 0 10px;
-
-            cursor: pointer;
-
-            svg {
-                fill: var(--font-main-color);
-            }
-        }
     }
 
     .buttons {
         display: flex;
         flex-direction: column;
         align-items: center;
-
-        .button {
-            padding: var(--btn-out-padding) 0;
-        }
     }
 }

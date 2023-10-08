@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import Button from "../../shared/ui/Button";
-import SelectField from "../../shared/ui/SelectField";
 import Icons from "../../shared/ui/Icons";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import { getTheme, changeTheme } from "../../app/store/userSlice/userSlice";
 import Rules from "../../shared/ui/Rules";
 import {
+    arranged,
     changeDifficulty,
     changeMode,
-    getIsGameGoing,
+    getScene,
+    manualArrange,
+    resetSettings,
     startGame,
     stopGame,
 } from "../../app/store/gameSlice/gameSlice";
@@ -17,7 +19,7 @@ import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
     const theme = useAppSelector(getTheme());
-    const isGameGoing = useAppSelector(getIsGameGoing());
+    const scene = useAppSelector(getScene());
     const dispatch = useAppDispatch();
 
     const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
@@ -33,82 +35,88 @@ const Settings = (): JSX.Element => {
                     modalPortal
                 )}
             <div className={styles.icons}>
-                <span
-                    className={styles.icon}
+                <Icons
+                    name="info"
+                    margin="10px"
                     onClick={() => setIsRulesOpen((prev) => !prev)}
-                >
-                    <Icons name="info" color="#000" />
-                </span>
-                <span
-                    className={styles.icon}
-                    onClick={() => dispatch(changeTheme())}
-                >
-                    {theme === "light" ? (
-                        <Icons name="sun" color="none" />
-                    ) : (
-                        <Icons name="moon" color="none" />
-                    )}
-                </span>
+                />
+                {theme === "light" ? (
+                    <Icons
+                        name="sun"
+                        margin="10px"
+                        onClick={() => dispatch(changeTheme())}
+                    />
+                ) : (
+                    <Icons
+                        name="moon"
+                        margin="10px"
+                        onClick={() => dispatch(changeTheme())}
+                    />
+                )}
+                <Icons
+                    name="reset"
+                    onClick={
+                        scene !== "game"
+                            ? () => dispatch(resetSettings())
+                            : () => {}
+                    }
+                />
             </div>
             <div className={styles.buttons}>
-                <div className={styles.button}>
-                    <SelectField
-                        initialValue={{
-                            label: "oneByOne",
-                            value: "По очереди",
-                        }}
-                        onChange={(option) =>
-                            dispatch(changeMode(option.label))
-                        }
-                        options={[
-                            { label: "oneByOne", value: "По очереди" },
-                            { label: "toMiss", value: "До промоха" },
-                        ]}
-                    />
-                </div>
-                <div className={styles.button}>
-                    <Button
-                        content="Лёгкий"
-                        onClick={() => dispatch(changeDifficulty("easy"))}
-                    />
-                </div>
-                <div className={styles.button}>
-                    <Button
-                        content="Средний"
-                        onClick={() => dispatch(changeDifficulty("normal"))}
-                    />
-                </div>
-                <div className={styles.button}>
-                    <Button
-                        content="Сложный"
-                        onClick={() => dispatch(changeDifficulty("hard"))}
-                    />
-                </div>
-                <div className={styles.button}>
-                    <Button
-                        content="Расставить автоматически"
-                        onClick={() => console.log("расставить автоматически")}
-                    />
-                </div>
-                <div className={styles.button}>
-                    <Button
-                        content="Расставить вручную"
-                        onClick={() => console.log("расставить вручную")}
-                    />
-                </div>
-                <div className={styles.button}>
-                    {isGameGoing ? (
-                        <Button
-                            content="Закончить"
-                            onClick={() => dispatch(stopGame())}
-                        />
-                    ) : (
-                        <Button
-                            content="Играть"
-                            onClick={() => dispatch(startGame())}
-                        />
-                    )}
-                </div>
+                <Button
+                    content="По очереди"
+                    active={scene === "chooseMode"}
+                    onClick={() => dispatch(changeMode("oneByOne"))}
+                />
+                <Button
+                    content="До промаха"
+                    active={scene === "chooseMode"}
+                    onClick={() => dispatch(changeMode("toMiss"))}
+                />
+                <Button
+                    content="Лёгкий"
+                    active={scene === "chooseDifficulty"}
+                    onClick={() => dispatch(changeDifficulty("easy"))}
+                />
+                <Button
+                    content="Средний"
+                    active={scene === "chooseDifficulty"}
+                    onClick={() => dispatch(changeDifficulty("normal"))}
+                />
+                <Button
+                    content="Сложный"
+                    active={scene === "chooseDifficulty"}
+                    onClick={() => dispatch(changeDifficulty("hard"))}
+                />
+                <Button
+                    content="Расставить автоматически"
+                    active={scene === "chooseArrangement"}
+                    onClick={() => dispatch(arranged())}
+                />
+                <Button
+                    content={
+                        scene === "arrangement"
+                            ? "Принять"
+                            : "Расставить вручную"
+                    }
+                    active={
+                        scene === "chooseArrangement" || scene === "arrangement"
+                    }
+                    onClick={
+                        scene === "chooseArrangement"
+                            ? () => dispatch(manualArrange())
+                            : () => dispatch(arranged())
+                    }
+                />
+                <Button
+                    content={scene === "game" ? "Закончить" : "Играть"}
+                    active={scene === "starting" || scene === "game"}
+                    onClick={
+                        scene === "game"
+                            ? () => dispatch(stopGame())
+                            : () => dispatch(startGame())
+                    }
+                />
             </div>
         </div>
     );

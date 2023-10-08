@@ -3,22 +3,31 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export type TDifficulty = "easy" | "normal" | "hard";
 
-export type TModes = "oneByOne" | "toMiss";
+export type TMode = "oneByOne" | "toMiss";
+
+export type TScene =
+    | "chooseMode"
+    | "chooseDifficulty"
+    | "chooseArrangement"
+    | "arrangement"
+    | "starting"
+    | "game"
+    | "end";
 
 interface IState {
-    game: number;
-    userWins: number;
+    countOfGames: number;
+    countOfUserWins: number;
     difficulty?: TDifficulty;
-    mode: TModes;
-    isGoing: boolean;
+    mode: TMode;
+    scene: TScene;
 }
 
 const initialState: IState = {
-    game: 0,
-    userWins: 0,
+    countOfGames: 0,
+    countOfUserWins: 0,
     difficulty: undefined,
     mode: "oneByOne",
-    isGoing: false,
+    scene: "chooseMode",
 };
 
 export const gameSlice = createSlice({
@@ -27,21 +36,29 @@ export const gameSlice = createSlice({
     reducers: {
         gameChangeMode: (state, action) => {
             state.mode = action.payload;
+            state.scene = "chooseDifficulty";
         },
         gameChangeDifficulty: (state, action) => {
             state.difficulty = action.payload;
+            state.scene = "chooseArrangement";
+        },
+        gameChoosedManualArrangement: (state) => {
+            state.scene = "arrangement";
+        },
+        gameArranged: (state) => {
+            state.scene = "starting";
         },
         gameStart: (state) => {
-            state.isGoing = true;
+            state.scene = "game";
         },
         gameStop: (state) => {
-            state.isGoing = false;
-            state.game += 1;
+            state.scene = "end";
+            state.countOfGames += 1;
         },
-        gameUserWin: (state) => {
-            state.isGoing = false;
-            state.game += 1;
-            state.userWins += 1;
+        gameResetSettings: (state) => {
+            state.difficulty = undefined;
+            state.mode = "oneByOne";
+            state.scene = "chooseMode";
         },
     },
 });
@@ -50,12 +67,14 @@ const { actions } = gameSlice;
 const {
     gameChangeMode,
     gameChangeDifficulty,
+    gameChoosedManualArrangement,
+    gameArranged,
     gameStart,
     gameStop,
-    gameUserWin,
+    gameResetSettings,
 } = actions;
 
-export const changeMode = (payload: TModes) => (dispatch: AppDispatch) => {
+export const changeMode = (payload: TMode) => (dispatch: AppDispatch) => {
     dispatch(gameChangeMode(payload));
 };
 
@@ -63,6 +82,14 @@ export const changeDifficulty =
     (payload: TDifficulty) => (dispatch: AppDispatch) => {
         dispatch(gameChangeDifficulty(payload));
     };
+
+export const manualArrange = () => (dispatch: AppDispatch) => {
+    dispatch(gameChoosedManualArrangement());
+};
+
+export const arranged = () => (dispatch: AppDispatch) => {
+    dispatch(gameArranged());
+};
 
 export const startGame = () => (dispatch: AppDispatch) => {
     dispatch(gameStart());
@@ -72,8 +99,8 @@ export const stopGame = () => (dispatch: AppDispatch) => {
     dispatch(gameStop());
 };
 
-export const userWin = () => (dispatch: AppDispatch) => {
-    dispatch(gameUserWin());
+export const resetSettings = () => (dispatch: AppDispatch) => {
+    dispatch(gameResetSettings());
 };
 
 export const getGameMode = () => (state: RootState) => {
@@ -85,15 +112,15 @@ export const getGameDifficulty = () => (state: RootState) => {
 };
 
 export const getCountOfGames = () => (state: RootState) => {
-    return state.game.game;
+    return state.game.countOfGames;
 };
 
 export const getCountOfUserWins = () => (state: RootState) => {
-    return state.game.userWins;
+    return state.game.countOfUserWins;
 };
 
-export const getIsGameGoing = () => (state: RootState) => {
-    return state.game.isGoing;
+export const getScene = () => (state: RootState) => {
+    return state.game.scene;
 };
 
 export default gameSlice.reducer;

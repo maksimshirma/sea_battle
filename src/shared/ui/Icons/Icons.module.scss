@@ -1,4 +1,9 @@
 .container {
     width: var(--icons-size);
     height: var(--icons-size);
+
+    cursor: pointer;
+
+    fill: var(--font-main-color);
+    stroke: var(--font-main-color);
 }

@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import classNames from "classnames";
 import { shotRobot } from "../../../app/store/robotSlice/robotSlice";
-import { getScene } from "../../../app/store/gameSlice/gameSlice";
+import {
+    changeWhooseMove,
+    getGameMode,
+    getScene,
+    getWhooseMove,
+} from "../../../app/store/gameSlice/gameSlice";
 import Icons from "../Icons";
 import styles from "./BattleBlock.module.scss";
 
@@ -16,7 +21,25 @@ interface IProps {
 const BattleBlock = ({ i, j, who, value }: IProps): JSX.Element => {
     const [icon, setIcon] = useState<string>("");
     const scene = useAppSelector(getScene());
+    const mode = useAppSelector(getGameMode());
+    const whooseMove = useAppSelector(getWhooseMove());
     const dispatch = useAppDispatch();
+
+    const handleClick = () => {
+        if (who !== "user" && whooseMove === "user") {
+            if (value !== 2 && value !== 3) {
+                if (mode === "oneByOne") {
+                    dispatch(shotRobot({ i, j }));
+                    dispatch(changeWhooseMove());
+                } else {
+                    dispatch(shotRobot({ i, j }));
+                    if (value === 4 || value === 0) {
+                        dispatch(changeWhooseMove());
+                    }
+                }
+            }
+        }
+    };
 
     useEffect(() => {
         if (value === 2) {
@@ -35,15 +58,7 @@ const BattleBlock = ({ i, j, who, value }: IProps): JSX.Element => {
 
     return (
         <div
-            onClick={
-                who !== "user" && scene === "game"
-                    ? () => {
-                          if (value !== 2 && value !== 3) {
-                              dispatch(shotRobot({ i, j }));
-                          }
-                      }
-                    : () => {}
-            }
+            onClick={scene === "game" ? () => handleClick() : () => {}}
             className={classNames(
                 styles.container,
                 value !== 2 && styles.hover,

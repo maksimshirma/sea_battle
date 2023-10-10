@@ -4,6 +4,7 @@ import Header from "../widgets/Header";
 import Layout from "../shared/ui/Layout/Layout";
 import ModalPortal from "../shared/ui/ModalPortal";
 import "./index.scss";
+import Robot from "../shared/ui/Robot";
 
 function App(): JSX.Element {
     return (
@@ -13,6 +14,7 @@ function App(): JSX.Element {
                 <Game />
             </Layout>
             <ModalPortal />
+            <Robot />
         </ProvidersWrapper>
     );
 }

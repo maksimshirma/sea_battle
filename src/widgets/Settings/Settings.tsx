@@ -12,13 +12,14 @@ import {
     arranged,
     changeDifficulty,
     changeMode,
+    getCountOfGames,
+    getCountOfUserWins,
     getScene,
     manualArrange,
     resetSettings,
     startGame,
     stopGame,
 } from "../../app/store/gameSlice/gameSlice";
-import styles from "./Settings.module.scss";
 import {
     getCountOfPlacedUsersShips,
     placeUserShips,
@@ -28,11 +29,14 @@ import {
     placeRobotShips,
     resetRobot,
 } from "../../app/store/robotSlice/robotSlice";
+import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
     const theme = useAppSelector(getTheme());
     const scene = useAppSelector(getScene());
     const countOfPlacedShips = useAppSelector(getCountOfPlacedUsersShips());
+    const userWins = useAppSelector(getCountOfUserWins());
+    const games = useAppSelector(getCountOfGames());
     const dispatch = useAppDispatch();
 
     const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
@@ -142,6 +146,12 @@ const Settings = (): JSX.Element => {
                             : () => dispatch(startGame())
                     }
                 />
+            </div>
+            <div className={styles.info}>
+                <div className={styles.user}>Всего игр: {games}</div>
+                <div className={styles.score}>
+                    Счёт: {userWins}:{games - userWins}
+                </div>
             </div>
         </div>
     );

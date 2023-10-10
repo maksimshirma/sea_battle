@@ -8,6 +8,8 @@ import {
     setName,
 } from "../../app/store/serviceSlice/serviceSlice";
 import { getRobotScore } from "../../app/store/robotSlice/robotSlice";
+import { useEffect } from "react";
+import { stopGame, userWon } from "../../app/store/gameSlice/gameSlice";
 import styles from "./PlayGround.module.scss";
 
 interface IProps {
@@ -23,6 +25,15 @@ const PlayGround = ({ position }: IProps): JSX.Element => {
     const handleChange = (value: string) => {
         dispatch(setName(value));
     };
+
+    useEffect(() => {
+        if (userScore === 0) {
+            dispatch(stopGame());
+        }
+        if (robotScore === 0) {
+            dispatch(userWon());
+        }
+    }, [userScore, robotScore]);
 
     return (
         <div className={styles.container}>

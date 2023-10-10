@@ -1,18 +1,21 @@
+import { useAppDispatch } from "../../../app/store/store";
+import { shotUser } from "../../../app/store/userSlice/userSlice";
 import styles from "./BattleBlock.module.scss";
 
 interface IProps {
-    index: [number, number];
+    i: number;
+    j: number;
 }
 
-const BattleBlock = ({ index }: IProps): JSX.Element => {
+const BattleBlock = ({ i, j }: IProps): JSX.Element => {
+    const dispatch = useAppDispatch();
     return (
         <div
+            onClick={() => dispatch(shotUser({ i, j }))}
             className={styles.container}
-            data-set-i={index[0]}
-            data-set-j={index[1]}
-        >
-            <span className={styles.item}></span>
-        </div>
+            data-set-i={i}
+            data-set-j={j}
+        ></div>
     );
 };
 

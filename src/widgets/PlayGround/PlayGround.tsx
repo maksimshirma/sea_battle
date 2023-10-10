@@ -2,7 +2,11 @@ import Board from "../../shared/ui/Board";
 import TextField from "../../shared/ui/TextField";
 import styles from "./PlayGround.module.scss";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
-import { getUserName, setName } from "../../app/store/userSlice/userSlice";
+import { getUserScore } from "../../app/store/userSlice/userSlice";
+import {
+    getUserName,
+    setName,
+} from "../../app/store/serviceSlice/serviceSlice";
 
 interface IProps {
     position: "left" | "right";
@@ -10,6 +14,7 @@ interface IProps {
 
 const PlayGround = ({ position }: IProps): JSX.Element => {
     const name = useAppSelector(getUserName());
+    const userScore = useAppSelector(getUserScore());
     const dispatch = useAppDispatch();
 
     const handleChange = (value: string) => {
@@ -30,7 +35,7 @@ const PlayGround = ({ position }: IProps): JSX.Element => {
                                 placeholder="Введите имя..."
                             />
                         </div>
-                        <div className={styles.score}>20</div>
+                        <div className={styles.score}>{userScore}</div>
                     </>
                 ) : (
                     <>

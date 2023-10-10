@@ -1,50 +1,184 @@
 import { AppDispatch, RootState } from "../store";
 import { createSlice } from "@reduxjs/toolkit";
+import { ships, IShip } from "../../../shared/lib/constants/ship";
+import { field } from "../../../shared/lib/constants/field";
+import { shot } from "../../../shared/lib/helpers/shot";
+import { findPlace } from "../../../shared/lib/helpers/findPlace";
+import { placeShip } from "../../../shared/lib/helpers/placeShip";
+import { unplaceShip } from "../../../shared/lib/helpers/unplaceShip";
+import { setNotAvailableBlocks } from "../../../shared/lib/helpers/setNotAvailableBlocks";
 
-interface IState {
-    name: string;
-    theme: "light" | "dark";
+export interface IUser {
+    score: number;
+    ships: IShip[];
+    field: number[][];
 }
 
-const initialState: IState = {
-    name: "",
-    theme: "light",
+const initialState: IUser = {
+    score: 20,
+    ships: ships,
+    field: field,
 };
 
 export const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        userNameUpdate: (state, action) => {
-            state.name = action.payload;
-        },
-        userChangeTheme: (state) => {
-            if (state.theme === "light") {
-                state.theme = "dark";
-            } else {
-                state.theme = "light";
+        userGetShoted: (state, action) => {
+            const { i, j } = action.payload;
+
+            const field = [...state.field.map((el) => [...el])];
+            const newField = shot(field, i, j);
+
+            if (newField[i][j] === 2) {
+                state.score -= 1;
             }
+
+            state.field = newField;
+        },
+        userPlacedShip: (state, action) => {
+            const { id } = action.payload;
+            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+            const field = [...state.field.map((el) => [...el])];
+
+            const index = ships.findIndex((ship) => ship.id === id);
+            const place = findPlace(field, ships[index]);
+
+            if (place) {
+                const { startI, startJ, endI, endJ, x, y } = place;
+                ships[index] = {
+                    ...ships[index],
+                    placed: true,
+                    x: x,
+                    y: y,
+                    startI: startI,
+                    startJ: startJ,
+                };
+                state.ships = ships;
+                state.field = placeShip(field, {
+                    startI,
+                    startJ,
+                    endI,
+                    endJ,
+                });
+            }
+        },
+        userUnplacedShip: (state, action) => {
+            const { id } = action.payload;
+            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+            const field = [...state.field.map((el) => [...el])];
+
+            const index = ships.findIndex((ship) => ship.id === id);
+            const newField = unplaceShip(field, ships[index]);
+
+            ships[index] = {
+                ...ships[index],
+                direction: "row",
+                placed: false,
+                x: 0,
+                y: 0,
+                startI: undefined,
+                startJ: undefined,
+            };
+
+            state.field = setNotAvailableBlocks(newField, ships);
+            state.ships = ships;
+        },
+        userChangeShipDirection: (state, action) => {
+            const { id } = action.payload;
+            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+
+            const index = ships.findIndex((ship) => ship.id === id);
+            ships[index] = {
+                ...ships[index],
+                direction: action.payload.diraction
+                    ? action.payload.diraction
+                    : ships[index].direction === "row"
+                    ? "col"
+                    : "row",
+            };
+
+            state.ships = ships;
+        },
+        userChangeShipCoordinates: (state, action) => {
+            const { id, x, y } = action.payload;
+            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+
+            const index = ships.findIndex((ship) => ship.id === id);
+            ships[index] = {
+                ...ships[index],
+                x: x,
+                y: y,
+            };
+
+            state.ships = ships;
+        },
+        userReset: (state) => {
+            state.score = 20;
+            state.ships = ships;
+            state.field = field;
         },
     },
 });
 
 const { actions } = userSlice;
-const { userNameUpdate, userChangeTheme } = actions;
+const {
+    userGetShoted,
+    userPlacedShip,
+    userUnplacedShip,
+    userChangeShipDirection,
+    userChangeShipCoordinates,
+    userReset,
+} = actions;
 
-export const setName = (payload: string) => (dispatch: AppDispatch) => {
-    dispatch(userNameUpdate(payload));
+export const shotUser =
+    (payload: { i: number; j: number }) => (dispatch: AppDispatch) => {
+        dispatch(userGetShoted(payload));
+    };
+
+export const placeUserShip =
+    (payload: { id: number }) => (dispatch: AppDispatch) => {
+        dispatch(userPlacedShip(payload));
+    };
+
+export const unplaceUserShip =
+    (payload: { id: number }) => (dispatch: AppDispatch) => {
+        dispatch(userUnplacedShip(payload));
+    };
+
+export const changeDirection =
+    (payload: { id: number; direction?: "row" | "col" }) =>
+    (dispatch: AppDispatch) => {
+        dispatch(userChangeShipDirection(payload));
+    };
+
+export const changeCoordinates =
+    (payload: { id: number; x: number; y: number }) =>
+    (dispatch: AppDispatch) => {
+        dispatch(userChangeShipCoordinates(payload));
+    };
+
+export const resetUser = () => (dispatch: AppDispatch) => {
+    dispatch(userReset());
 };
 
-export const changeTheme = () => (dispatch: AppDispatch) => {
-    dispatch(userChangeTheme());
+export const getUserField = () => (state: RootState) => {
+    return state.user.field;
 };
 
-export const getUserName = () => (state: RootState) => {
-    return state.user.name;
+export const getUserShips = () => (state: RootState) => {
+    return state.user.ships;
 };
 
-export const getTheme = () => (state: RootState) => {
-    return state.user.theme;
+export const getUserScore = () => (state: RootState) => {
+    return state.user.score;
+};
+
+export const getCountOfPlacedUsersShips = () => (state: RootState) => {
+    return state.user.ships.reduce(
+        (acc, ship) => (ship.placed ? acc + 1 : acc),
+        0
+    );
 };
 
 export default userSlice.reducer;

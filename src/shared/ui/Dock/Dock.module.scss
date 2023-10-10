@@ -1,0 +1,13 @@
+.container {
+    max-width: var(--board-size);
+    max-height: 165px;
+    height: calc(var(--board-size) * 0.55);
+
+    margin: 45px 35px 35px 35px;
+
+    background-color: var(--bg-main-color);
+}
+
+.hidden {
+    background-color: inherit;
+}

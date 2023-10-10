@@ -1,6 +1,8 @@
 import BattleField from "../BattleField";
 import RowsNumbering from "../RowsNumbering";
 import ColumnsNumbering from "../ColumnsNumbering";
+import { useAppSelector } from "../../../app/store/store";
+import { getUserField } from "../../../app/store/userSlice/userSlice";
 import styles from "./Board.module.scss";
 
 interface IProps {
@@ -8,16 +10,10 @@ interface IProps {
 }
 
 const Board = ({ position }: IProps): JSX.Element => {
-    const board: number[][] = [];
-    for (let i = 0; i < 10; i++) {
-        const row: number[] = [];
-        for (let j = 0; j < 10; j++) {
-            row.push(i * 10 + j + 1);
-        }
-        board.push(row);
-    }
+    const board = useAppSelector(getUserField());
+
     return (
-        <div className={styles.container}>
+        <div className={styles.container} id="board">
             <div className={styles.board}>
                 <BattleField board={board} />
             </div>

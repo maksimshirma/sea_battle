@@ -3,7 +3,10 @@ import { createPortal } from "react-dom";
 import Button from "../../shared/ui/Button";
 import Icons from "../../shared/ui/Icons";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
-import { getTheme, changeTheme } from "../../app/store/userSlice/userSlice";
+import {
+    getTheme,
+    changeTheme,
+} from "../../app/store/serviceSlice/serviceSlice";
 import Rules from "../../shared/ui/Rules";
 import {
     arranged,
@@ -16,10 +19,15 @@ import {
     stopGame,
 } from "../../app/store/gameSlice/gameSlice";
 import styles from "./Settings.module.scss";
+import {
+    getCountOfPlacedUsersShips,
+    resetUser,
+} from "../../app/store/userSlice/userSlice";
 
 const Settings = (): JSX.Element => {
     const theme = useAppSelector(getTheme());
     const scene = useAppSelector(getScene());
+    const countOfPlacedShips = useAppSelector(getCountOfPlacedUsersShips());
     const dispatch = useAppDispatch();
 
     const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
@@ -57,7 +65,10 @@ const Settings = (): JSX.Element => {
                     name="reset"
                     onClick={
                         scene !== "game"
-                            ? () => dispatch(resetSettings())
+                            ? () => {
+                                  dispatch(resetSettings());
+                                  dispatch(resetUser());
+                              }
                             : () => {}
                     }
                 />
@@ -100,7 +111,8 @@ const Settings = (): JSX.Element => {
                             : "Расставить вручную"
                     }
                     active={
-                        scene === "chooseArrangement" || scene === "arrangement"
+                        scene === "chooseArrangement" ||
+                        (scene === "arrangement" && countOfPlacedShips === 10)
                     }
                     onClick={
                         scene === "chooseArrangement"

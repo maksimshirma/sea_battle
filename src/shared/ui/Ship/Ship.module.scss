@@ -1,0 +1,25 @@
+.container {
+    width: fit-content;
+    border: 2px solid #c21919;
+    background-color: #df5454;
+    z-index: 1000;
+    margin: 5px;
+    float: left;
+
+    .item {
+        width: calc(var(--board-size) / 10);
+        height: calc(var(--board-size) / 10);
+    }
+}
+
+.flex {
+    @extend .container;
+    display: flex;
+}
+
+.absolute {
+    @extend .container;
+    margin: 0;
+    float: none;
+    position: absolute;
+}

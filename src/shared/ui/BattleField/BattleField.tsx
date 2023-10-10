@@ -12,7 +12,7 @@ const BattleField = ({ board }: IProps): JSX.Element => {
             {board.map((row, i) =>
                 row.map((_, j) => (
                     <React.Fragment key={`${i}-${j}`}>
-                        <BattleBlock index={[i, j]} />
+                        <BattleBlock i={i} j={j} />
                     </React.Fragment>
                 ))
             )}

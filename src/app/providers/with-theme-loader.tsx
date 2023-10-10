@@ -1,5 +1,5 @@
 import { useAppSelector } from "../store/store";
-import { getTheme } from "../store/userSlice/userSlice";
+import { getTheme } from "../store/serviceSlice/serviceSlice";
 
 const ThemeLoaderWrapper = ({ children }: { children: React.ReactNode }) => {
     const theme = useAppSelector(getTheme());

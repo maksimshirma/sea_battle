@@ -2,12 +2,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import userReducer from "./userSlice/userSlice";
+import serviceReducer from "./serviceSlice/serviceSlice";
 import gameReducer from "./gameSlice/gameSlice";
+import userReducer from "./userSlice/userSlice";
 
 const rootReducer = combineReducers({
-    user: userReducer,
+    service: serviceReducer,
     game: gameReducer,
+    user: userReducer,
 });
 
 const persistConfig = {

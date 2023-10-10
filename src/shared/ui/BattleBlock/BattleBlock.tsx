@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import classNames from "classnames";
 import { shotRobot } from "../../../app/store/robotSlice/robotSlice";
@@ -13,8 +14,25 @@ interface IProps {
 }
 
 const BattleBlock = ({ i, j, who, value }: IProps): JSX.Element => {
+    const [icon, setIcon] = useState<string>("");
     const scene = useAppSelector(getScene());
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        if (value === 2) {
+            setIcon("boom");
+            setTimeout(() => {
+                setIcon("");
+            }, 500);
+        }
+        if (value === 3) {
+            setIcon("splash");
+            setTimeout(() => {
+                setIcon("miss");
+            }, 500);
+        }
+    }, [value]);
+
     return (
         <div
             onClick={
@@ -31,10 +49,8 @@ const BattleBlock = ({ i, j, who, value }: IProps): JSX.Element => {
                 value !== 2 && styles.hover,
                 value === 2 && styles.hitted
             )}
-            data-set-i={i}
-            data-set-j={j}
         >
-            {value === 3 && <Icons name="miss" />}
+            {(value === 3 || value === 2) && <Icons name={icon} />}
         </div>
     );
 };

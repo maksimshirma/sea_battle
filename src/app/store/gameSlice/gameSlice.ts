@@ -131,7 +131,7 @@ export const resetSettings = () => (dispatch: AppDispatch) => {
 };
 
 export const userWon = () => (dispatch: AppDispatch) => {
-    dispatch(gameStop());
+    dispatch(stopGame());
     dispatch(gameUserWin());
     dispatch(resetSettings());
 };

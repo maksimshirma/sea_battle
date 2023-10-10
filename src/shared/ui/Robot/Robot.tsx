@@ -62,7 +62,7 @@ const Robot = () => {
                     dispatch(changeWhooseMove());
                 }, 1000);
             } else {
-                const prev: string[] = [];
+                let prev: string[] = [];
                 ref.current = setInterval(() => {
                     let { i, j } = getBlock();
 
@@ -79,6 +79,7 @@ const Robot = () => {
                     }
                     dispatch(shotUser({ i, j }));
                 }, 1000);
+                prev = [];
             }
         }
     }, [whooseMove]);

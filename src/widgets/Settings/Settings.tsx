@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Button from "../../shared/ui/Button";
 import Icons from "../../shared/ui/Icons";
@@ -7,7 +7,7 @@ import {
     getTheme,
     changeTheme,
 } from "../../app/store/serviceSlice/serviceSlice";
-import Rules from "../../shared/ui/Rules";
+import Modal from "../../shared/ui/Modal/Modal";
 import {
     arranged,
     changeDifficulty,
@@ -19,16 +19,20 @@ import {
     resetSettings,
     startGame,
     stopGame,
+    userWon,
 } from "../../app/store/gameSlice/gameSlice";
 import {
     getCountOfPlacedUsersShips,
+    getUserScore,
     placeUserShips,
     resetUser,
 } from "../../app/store/userSlice/userSlice";
 import {
+    getRobotScore,
     placeRobotShips,
     resetRobot,
 } from "../../app/store/robotSlice/robotSlice";
+import Rules from "../../shared/ui/Rules";
 import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
@@ -37,18 +41,47 @@ const Settings = (): JSX.Element => {
     const countOfPlacedShips = useAppSelector(getCountOfPlacedUsersShips());
     const userWins = useAppSelector(getCountOfUserWins());
     const games = useAppSelector(getCountOfGames());
+    const userScore = useAppSelector(getUserScore());
+    const robotScore = useAppSelector(getRobotScore());
     const dispatch = useAppDispatch();
 
     const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
+    const [isResultOpen, setIsResultOpen] = useState<boolean>(false);
 
     const modalPortal = document.getElementById("modal-portal");
 
+    useEffect(() => {
+        if (userScore === 0 || robotScore === 0) {
+            if (userScore > robotScore) {
+                dispatch(userWon());
+            } else {
+                dispatch(stopGame());
+            }
+
+            setIsResultOpen(true);
+        }
+    }, [userScore, robotScore]);
+
     return (
         <div className={styles.container}>
+            {isResultOpen &&
+                modalPortal &&
+                createPortal(
+                    <Modal
+                        header="Игра окончена"
+                        onClick={() => setIsResultOpen(false)}
+                    />,
+                    modalPortal
+                )}
             {isRulesOpen &&
                 modalPortal &&
                 createPortal(
-                    <Rules onClick={() => setIsRulesOpen(false)} />,
+                    <Modal
+                        header="Правила"
+                        onClick={() => setIsRulesOpen(false)}
+                    >
+                        <Rules />
+                    </Modal>,
                     modalPortal
                 )}
             <div className={styles.icons}>

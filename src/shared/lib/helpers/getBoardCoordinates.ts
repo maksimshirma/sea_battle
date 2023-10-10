@@ -1,11 +1,13 @@
-export const getBoardCoordinates = (): {
+export const getBoardCoordinates = (
+    id: string
+): {
     startX: number;
     startY: number;
     endX: number;
     endY: number;
     blockSize: number;
 } | null => {
-    const board = document.getElementById("board") as HTMLDivElement;
+    const board = document.getElementById(id) as HTMLDivElement;
 
     if (board) {
         const startX = board.offsetLeft;

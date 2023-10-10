@@ -21,8 +21,13 @@ import {
 import styles from "./Settings.module.scss";
 import {
     getCountOfPlacedUsersShips,
+    placeUserShips,
     resetUser,
 } from "../../app/store/userSlice/userSlice";
+import {
+    placeRobotShips,
+    resetRobot,
+} from "../../app/store/robotSlice/robotSlice";
 
 const Settings = (): JSX.Element => {
     const theme = useAppSelector(getTheme());
@@ -68,6 +73,7 @@ const Settings = (): JSX.Element => {
                             ? () => {
                                   dispatch(resetSettings());
                                   dispatch(resetUser());
+                                  dispatch(resetRobot());
                               }
                             : () => {}
                     }
@@ -102,7 +108,11 @@ const Settings = (): JSX.Element => {
                 <Button
                     content="Расставить автоматически"
                     active={scene === "chooseArrangement"}
-                    onClick={() => dispatch(arranged())}
+                    onClick={() => {
+                        dispatch(placeUserShips());
+                        dispatch(placeRobotShips());
+                        dispatch(arranged());
+                    }}
                 />
                 <Button
                     content={
@@ -116,7 +126,10 @@ const Settings = (): JSX.Element => {
                     }
                     onClick={
                         scene === "chooseArrangement"
-                            ? () => dispatch(manualArrange())
+                            ? () => {
+                                  dispatch(placeRobotShips());
+                                  dispatch(manualArrange());
+                              }
                             : () => dispatch(arranged())
                     }
                 />

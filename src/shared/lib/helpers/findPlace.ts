@@ -3,7 +3,8 @@ import { getCoordinatesOfShip } from "./getCoordinatesOfShip";
 
 export const findPlace = (
     field: number[][],
-    ship: IShip
+    ship: IShip,
+    boardId: string
 ): {
     startI: number;
     startJ: number;
@@ -13,7 +14,7 @@ export const findPlace = (
     y: number;
 } | null => {
     const { size, direction, x, y } = ship;
-    const result = getCoordinatesOfShip(x, y, size, direction);
+    const result = getCoordinatesOfShip(x, y, size, direction, boardId);
     if (result) {
         const {
             startI,
@@ -31,8 +32,8 @@ export const findPlace = (
             }
         }
 
-        const newX = boardStartX + startJ * blockSize;
-        const newY = boardStartY + startI * blockSize;
+        const newX = boardStartX + startJ * blockSize + 1;
+        const newY = boardStartY + startI * blockSize + 1;
         return {
             startI,
             startJ,

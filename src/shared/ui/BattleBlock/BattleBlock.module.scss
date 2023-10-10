@@ -12,9 +12,15 @@
     align-items: center;
 
     float: left;
+}
 
+.hover {
     &:hover {
         background-color: var(--btn-active-color);
         cursor: pointer;
     }
+}
+
+.hitted {
+    background-color: var(--hitted-block-color);
 }

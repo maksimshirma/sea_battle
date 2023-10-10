@@ -1,12 +1,14 @@
-import Board from "../../shared/ui/Board";
 import TextField from "../../shared/ui/TextField";
-import styles from "./PlayGround.module.scss";
+import RobotBoard from "../../shared/ui/RobotBoard";
+import UserBoard from "../../shared/ui/UserBoard";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import { getUserScore } from "../../app/store/userSlice/userSlice";
 import {
     getUserName,
     setName,
 } from "../../app/store/serviceSlice/serviceSlice";
+import { getRobotScore } from "../../app/store/robotSlice/robotSlice";
+import styles from "./PlayGround.module.scss";
 
 interface IProps {
     position: "left" | "right";
@@ -15,6 +17,7 @@ interface IProps {
 const PlayGround = ({ position }: IProps): JSX.Element => {
     const name = useAppSelector(getUserName());
     const userScore = useAppSelector(getUserScore());
+    const robotScore = useAppSelector(getRobotScore());
     const dispatch = useAppDispatch();
 
     const handleChange = (value: string) => {
@@ -39,12 +42,12 @@ const PlayGround = ({ position }: IProps): JSX.Element => {
                     </>
                 ) : (
                     <>
-                        <div className={styles.score}>20</div>
+                        <div className={styles.score}>{robotScore}</div>
                         <div className={styles.name}>Робот</div>
                     </>
                 )}
             </div>
-            <Board position={position} />
+            {position === "left" ? <UserBoard /> : <RobotBoard />}
         </div>
     );
 };

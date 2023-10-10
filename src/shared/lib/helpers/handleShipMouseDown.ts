@@ -58,7 +58,7 @@ export const handleShipMouseDown = (
         document.removeEventListener("mousemove", onMouseMove);
         document.removeEventListener("wheel", onWheel);
 
-        const board = getBoardCoordinates();
+        const board = getBoardCoordinates("user-board");
         if (board) {
             const { startX, startY, endX, endY } = board;
             const [x, y] = [event.clientX - shiftX, event.clientY - shiftY];

@@ -23,4 +23,7 @@
             <path d="m4 1v4h-4" transform="matrix(1 0 0 -1 0 6)"/>
         </g>
     </symbol>
+    <symbol id="icon-miss" viewBox="0 0 64 64">
+        <line x1="8.06" y1="8.06" x2="55.41" y2="55.94"/><line x1="55.94" y1="8.06" x2="8.59" y2="55.94"/>
+    </symbol>
 </svg>

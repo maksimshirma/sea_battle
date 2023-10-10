@@ -1,10 +1,11 @@
 .container {
     width: fit-content;
-    border: 2px solid #c21919;
-    background-color: #df5454;
+    background-color: #ff0000;
     z-index: 1000;
     margin: 5px;
     float: left;
+
+    opacity: 0.4;
 
     .item {
         width: calc(var(--board-size) / 10);

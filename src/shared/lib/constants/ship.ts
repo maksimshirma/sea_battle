@@ -5,8 +5,11 @@ export interface IShip {
     placed: boolean;
     x: number;
     y: number;
+    shots?: number;
     startI?: number;
     startJ?: number;
+    endI?: number;
+    endJ?: number;
 }
 
 export const ships: IShip[] = [

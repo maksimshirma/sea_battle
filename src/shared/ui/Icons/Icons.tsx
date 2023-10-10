@@ -4,7 +4,7 @@ import styles from "./Icons.module.scss";
 interface IProps {
     name: string;
     margin?: string;
-    onClick: () => void;
+    onClick?: () => void;
 }
 
 function Icons({ name, margin, onClick }: IProps) {

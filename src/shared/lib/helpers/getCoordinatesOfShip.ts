@@ -4,7 +4,8 @@ export const getCoordinatesOfShip = (
     x: number,
     y: number,
     size: number,
-    direction: "row" | "col"
+    direction: "row" | "col",
+    boardId: string
 ): {
     startI: number;
     startJ: number;
@@ -14,7 +15,7 @@ export const getCoordinatesOfShip = (
     boardStartY: number;
     blockSize: number;
 } | null => {
-    const board = getBoardCoordinates();
+    const board = getBoardCoordinates(boardId);
 
     if (board) {
         const { startX, startY, endX, endY, blockSize } = board;
@@ -23,6 +24,10 @@ export const getCoordinatesOfShip = (
             const startJ = Math.abs(Math.ceil((x - startX) / blockSize - 0.5));
             const endI = direction === "row" ? startI : startI + size - 1;
             const endJ = direction === "col" ? startJ : startJ + size - 1;
+
+            if (endI > 9 || endJ > 9 || startI < 0 || startJ < 0) {
+                return null;
+            }
 
             return {
                 startI,

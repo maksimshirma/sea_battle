@@ -7,6 +7,7 @@ import { findPlace } from "../../../shared/lib/helpers/findPlace";
 import { placeShip } from "../../../shared/lib/helpers/placeShip";
 import { unplaceShip } from "../../../shared/lib/helpers/unplaceShip";
 import { setNotAvailableBlocks } from "../../../shared/lib/helpers/setNotAvailableBlocks";
+import { autoPlaceShips } from "../../../shared/lib/helpers/autoPlaceShips";
 
 export interface IUser {
     score: number;
@@ -28,13 +29,34 @@ export const userSlice = createSlice({
             const { i, j } = action.payload;
 
             const field = [...state.field.map((el) => [...el])];
-            const newField = shot(field, i, j);
+            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+
+            const { field: newField, ships: newShips } = shot(
+                field,
+                ships,
+                i,
+                j
+            );
 
             if (newField[i][j] === 2) {
                 state.score -= 1;
             }
 
             state.field = newField;
+            state.ships = newShips;
+        },
+        userAutoPlaceShip: (state) => {
+            const field = [...state.field.map((el) => [...el])];
+            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+
+            const { field: newField, ships: newShips } = autoPlaceShips(
+                field,
+                ships,
+                "user-board"
+            );
+
+            state.field = newField;
+            state.ships = newShips;
         },
         userPlacedShip: (state, action) => {
             const { id } = action.payload;
@@ -42,7 +64,7 @@ export const userSlice = createSlice({
             const field = [...state.field.map((el) => [...el])];
 
             const index = ships.findIndex((ship) => ship.id === id);
-            const place = findPlace(field, ships[index]);
+            const place = findPlace(field, ships[index], "user-board");
 
             if (place) {
                 const { startI, startJ, endI, endJ, x, y } = place;
@@ -53,6 +75,8 @@ export const userSlice = createSlice({
                     y: y,
                     startI: startI,
                     startJ: startJ,
+                    endI: endI,
+                    endJ: endJ,
                 };
                 state.ships = ships;
                 state.field = placeShip(field, {
@@ -124,6 +148,7 @@ export const userSlice = createSlice({
 const { actions } = userSlice;
 const {
     userGetShoted,
+    userAutoPlaceShip,
     userPlacedShip,
     userUnplacedShip,
     userChangeShipDirection,
@@ -135,6 +160,10 @@ export const shotUser =
     (payload: { i: number; j: number }) => (dispatch: AppDispatch) => {
         dispatch(userGetShoted(payload));
     };
+
+export const placeUserShips = () => (dispatch: AppDispatch) => {
+    dispatch(userAutoPlaceShip());
+};
 
 export const placeUserShip =
     (payload: { id: number }) => (dispatch: AppDispatch) => {

@@ -1,6 +1,6 @@
 import styles from "./Header.module.scss";
 
-const Header = () => {
+const Header = (): JSX.Element => {
     return (
         <div className={styles.container}>
             <div className={styles.header}>Морской бой</div>

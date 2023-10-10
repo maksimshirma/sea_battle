@@ -7,7 +7,7 @@ interface IProps {
     onClick?: () => void;
 }
 
-function Icons({ name, margin, onClick }: IProps) {
+const Icons = ({ name, margin, onClick }: IProps): JSX.Element => {
     return (
         <svg
             style={{ marginRight: margin }}
@@ -17,6 +17,6 @@ function Icons({ name, margin, onClick }: IProps) {
             <use xlinkHref={`${IconsSVG}#icon-${name}`} />
         </svg>
     );
-}
+};
 
 export default Icons;

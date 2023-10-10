@@ -1,22 +1,16 @@
 import { useEffect, useRef } from "react";
-import {
-    changeWhooseMove,
-    getGameDifficulty,
-    getGameMode,
-    getScene,
-    getWhooseMove,
-} from "../../../app/store/gameSlice/gameSlice";
+import { gameActions } from "../../../app/store/gameSlice/gameSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
-import { getUserField, shotUser } from "../../../app/store/userSlice/userSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
 import { getRandomBetween } from "../../lib/helpers/getRandomBetween";
 
-const Robot = () => {
+const Robot = (): null => {
     const ref = useRef<number>(0);
-    const mode = useAppSelector(getGameMode());
-    const difficulty = useAppSelector(getGameDifficulty());
-    const whooseMove = useAppSelector(getWhooseMove());
-    const userField = useAppSelector(getUserField());
-    const scene = useAppSelector(getScene());
+    const mode = useAppSelector(gameActions.getGameMode());
+    const difficulty = useAppSelector(gameActions.getGameDifficulty());
+    const whooseMove = useAppSelector(gameActions.getWhooseMove());
+    const userField = useAppSelector(userActions.getUserField());
+    const scene = useAppSelector(gameActions.getScene());
     const dispatch = useAppDispatch();
 
     const getRandomBlock = () => {
@@ -58,11 +52,11 @@ const Robot = () => {
         if (whooseMove === "robot") {
             if (mode === "oneByOne") {
                 setTimeout(() => {
-                    dispatch(shotUser(getBlock()));
-                    dispatch(changeWhooseMove());
+                    dispatch(userActions.shotUser(getBlock()));
+                    dispatch(gameActions.changeWhooseMove());
                 }, 1000);
             } else {
-                let prev: string[] = [];
+                const prev: string[] = [];
                 ref.current = setInterval(() => {
                     let { i, j } = getBlock();
 
@@ -74,12 +68,11 @@ const Robot = () => {
                     prev.push(`${i}${j}`);
 
                     if (userField[i][j] !== 1) {
-                        dispatch(changeWhooseMove());
+                        dispatch(gameActions.changeWhooseMove());
                         clearInterval(ref.current);
                     }
-                    dispatch(shotUser({ i, j }));
+                    dispatch(userActions.shotUser({ i, j }));
                 }, 1000);
-                prev = [];
             }
         }
     }, [whooseMove]);

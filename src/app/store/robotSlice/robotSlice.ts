@@ -65,25 +65,33 @@ export const robotSlice = createSlice({
 const { actions } = robotSlice;
 const { robotGetShoted, robotPlacedShips, robotReset } = actions;
 
-export const shotRobot =
+const shotRobot =
     (payload: { i: number; j: number }) => (dispatch: AppDispatch) => {
         dispatch(robotGetShoted(payload));
     };
 
-export const placeRobotShips = () => (dispatch: AppDispatch) => {
+const placeRobotShips = () => (dispatch: AppDispatch) => {
     dispatch(robotPlacedShips());
 };
 
-export const resetRobot = () => (dispatch: AppDispatch) => {
+const resetRobot = () => (dispatch: AppDispatch) => {
     dispatch(robotReset());
 };
 
-export const getRobotField = () => (state: RootState) => {
+const getRobotField = () => (state: RootState) => {
     return state.robot.field;
 };
 
-export const getRobotScore = () => (state: RootState) => {
+const getRobotScore = () => (state: RootState) => {
     return state.robot.score;
+};
+
+export const robotActions = {
+    shotRobot,
+    placeRobotShips,
+    resetRobot,
+    getRobotField,
+    getRobotScore,
 };
 
 export default robotSlice.reducer;

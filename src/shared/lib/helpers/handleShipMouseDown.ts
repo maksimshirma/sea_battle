@@ -1,10 +1,5 @@
 import { AppDispatch } from "../../../app/store/store";
-import {
-    changeCoordinates,
-    changeDirection,
-    placeUserShip,
-    unplaceUserShip,
-} from "../../../app/store/userSlice/userSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
 import { getBoardCoordinates } from "./getBoardCoordinates";
 
 export const handleShipMouseDown = (
@@ -35,7 +30,7 @@ export const handleShipMouseDown = (
 
     if (placed) {
         shipStatic();
-        dispatch(unplaceUserShip({ id }));
+        dispatch(userActions.unplaceUserShip({ id }));
     } else {
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
@@ -45,7 +40,7 @@ export const handleShipMouseDown = (
     function onMouseMove(event: MouseEvent): void {
         shipAbsolute();
         dispatch(
-            changeCoordinates({
+            userActions.changeCoordinates({
                 id,
                 x: event.clientX - shiftX,
                 y: event.clientY - shiftY,
@@ -64,16 +59,16 @@ export const handleShipMouseDown = (
             const [x, y] = [event.clientX - shiftX, event.clientY - shiftY];
             if (!(x >= startX && x <= endX && y >= startY && y <= endY)) {
                 shipStatic();
-                dispatch(changeDirection({ id, direction: "row" }));
+                dispatch(userActions.changeDirection({ id, direction: "row" }));
             }
         }
 
         if (!placed) {
-            dispatch(placeUserShip({ id }));
+            dispatch(userActions.placeUserShip({ id }));
         }
     }
 
     function onWheel() {
-        dispatch(changeDirection({ id }));
+        dispatch(userActions.changeDirection({ id }));
     }
 };

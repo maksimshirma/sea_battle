@@ -14,12 +14,10 @@
 }
 
 .flex {
-    @extend .container;
     display: flex;
 }
 
 .absolute {
-    @extend .container;
     margin: 0;
     float: none;
     position: absolute;

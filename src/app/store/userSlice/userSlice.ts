@@ -108,7 +108,7 @@ export const userSlice = createSlice({
             state.field = setNotAvailableBlocks(newField, ships);
             state.ships = ships;
         },
-        userChangeShipDirection: (state, action) => {
+        userChangedShipDirection: (state, action) => {
             const { id } = action.payload;
             const ships = [...state.ships.map((ship) => ({ ...ship }))];
 
@@ -124,7 +124,7 @@ export const userSlice = createSlice({
 
             state.ships = ships;
         },
-        userChangeShipCoordinates: (state, action) => {
+        userChangedShipCoordinates: (state, action) => {
             const { id, x, y } = action.payload;
             const ships = [...state.ships.map((ship) => ({ ...ship }))];
 
@@ -151,63 +151,76 @@ const {
     userAutoPlaceShip,
     userPlacedShip,
     userUnplacedShip,
-    userChangeShipDirection,
-    userChangeShipCoordinates,
+    userChangedShipDirection,
+    userChangedShipCoordinates,
     userReset,
 } = actions;
 
-export const shotUser =
+const shotUser =
     (payload: { i: number; j: number }) => (dispatch: AppDispatch) => {
         dispatch(userGetShoted(payload));
     };
 
-export const placeUserShips = () => (dispatch: AppDispatch) => {
+const placeUserShips = () => (dispatch: AppDispatch) => {
     dispatch(userAutoPlaceShip());
 };
 
-export const placeUserShip =
-    (payload: { id: number }) => (dispatch: AppDispatch) => {
-        dispatch(userPlacedShip(payload));
-    };
+const placeUserShip = (payload: { id: number }) => (dispatch: AppDispatch) => {
+    dispatch(userPlacedShip(payload));
+};
 
-export const unplaceUserShip =
+const unplaceUserShip =
     (payload: { id: number }) => (dispatch: AppDispatch) => {
         dispatch(userUnplacedShip(payload));
     };
 
-export const changeDirection =
+const changeDirection =
     (payload: { id: number; direction?: "row" | "col" }) =>
     (dispatch: AppDispatch) => {
-        dispatch(userChangeShipDirection(payload));
+        dispatch(userChangedShipDirection(payload));
     };
 
-export const changeCoordinates =
+const changeCoordinates =
     (payload: { id: number; x: number; y: number }) =>
     (dispatch: AppDispatch) => {
-        dispatch(userChangeShipCoordinates(payload));
+        dispatch(userChangedShipCoordinates(payload));
     };
 
-export const resetUser = () => (dispatch: AppDispatch) => {
+const resetUser = () => (dispatch: AppDispatch) => {
     dispatch(userReset());
 };
 
-export const getUserField = () => (state: RootState) => {
+const getUserField = () => (state: RootState) => {
     return state.user.field;
 };
 
-export const getUserShips = () => (state: RootState) => {
+const getUserShips = () => (state: RootState) => {
     return state.user.ships;
 };
 
-export const getUserScore = () => (state: RootState) => {
+const getUserScore = () => (state: RootState) => {
     return state.user.score;
 };
 
-export const getCountOfPlacedUsersShips = () => (state: RootState) => {
+const getCountOfPlacedUsersShips = () => (state: RootState) => {
     return state.user.ships.reduce(
         (acc, ship) => (ship.placed ? acc + 1 : acc),
         0
     );
+};
+
+export const userActions = {
+    shotUser,
+    placeUserShips,
+    placeUserShip,
+    unplaceUserShip,
+    changeDirection,
+    changeCoordinates,
+    resetUser,
+    getUserField,
+    getUserShips,
+    getUserScore,
+    getCountOfPlacedUsersShips,
 };
 
 export default userSlice.reducer;

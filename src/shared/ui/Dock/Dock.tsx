@@ -1,17 +1,16 @@
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/store/store";
-import {
-    getCountOfPlacedUsersShips,
-    getUserShips,
-} from "../../../app/store/userSlice/userSlice";
-import { getScene } from "../../../app/store/gameSlice/gameSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
+import { gameActions } from "../../../app/store/gameSlice/gameSlice";
 import Ship from "../Ship";
 import styles from "./Dock.module.scss";
 
-const Dock = () => {
-    const ships = useAppSelector(getUserShips());
-    const countOfPlacedShips = useAppSelector(getCountOfPlacedUsersShips());
-    const scene = useAppSelector(getScene());
+const Dock = (): JSX.Element => {
+    const ships = useAppSelector(userActions.getUserShips());
+    const countOfPlacedShips = useAppSelector(
+        userActions.getCountOfPlacedUsersShips()
+    );
+    const scene = useAppSelector(gameActions.getScene());
 
     return (
         <div

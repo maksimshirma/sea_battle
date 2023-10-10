@@ -1,4 +1,4 @@
-const Rules = () => {
+const Rules = (): JSX.Element => {
     return (
         <>
             <p>

@@ -1,7 +1,7 @@
-import { resetRobot } from "../robotSlice/robotSlice";
-import { AppDispatch, RootState } from "../store";
 import { createSlice } from "@reduxjs/toolkit";
-import { resetUser } from "../userSlice/userSlice";
+import { AppDispatch, RootState } from "../store";
+import { robotActions } from "../robotSlice/robotSlice";
+import { userActions } from "../userSlice/userSlice";
 
 export type TDifficulty = "easy" | "normal" | "hard";
 
@@ -93,71 +93,88 @@ const {
     gameUserWin,
 } = actions;
 
-export const changeMode = (payload: TMode) => (dispatch: AppDispatch) => {
+const changeMode = (payload: TMode) => (dispatch: AppDispatch) => {
     dispatch(gameChangeMode(payload));
 };
 
-export const changeDifficulty =
-    (payload: TDifficulty) => (dispatch: AppDispatch) => {
-        dispatch(gameChangeDifficulty(payload));
-    };
+const changeDifficulty = (payload: TDifficulty) => (dispatch: AppDispatch) => {
+    dispatch(gameChangeDifficulty(payload));
+};
 
-export const manualArrange = () => (dispatch: AppDispatch) => {
+const manualArrange = () => (dispatch: AppDispatch) => {
     dispatch(gameChoosedManualArrangement());
 };
 
-export const arranged = () => (dispatch: AppDispatch) => {
+const arranged = () => (dispatch: AppDispatch) => {
     dispatch(gameArranged());
 };
 
-export const startGame = () => (dispatch: AppDispatch) => {
+const startGame = () => (dispatch: AppDispatch) => {
     dispatch(gameStart());
 };
 
-export const changeWhooseMove =
+const changeWhooseMove =
     (payload?: { whooseMove: "user" | "robot" }) => (dispatch: AppDispatch) => {
         dispatch(gameChangeWhooseMove(payload));
     };
 
-export const stopGame = () => (dispatch: AppDispatch) => {
+const stopGame = () => (dispatch: AppDispatch) => {
     dispatch(gameStop());
     dispatch(resetSettings());
-    dispatch(resetRobot());
-    dispatch(resetUser());
+    dispatch(robotActions.resetRobot());
+    dispatch(userActions.resetUser());
 };
 
-export const resetSettings = () => (dispatch: AppDispatch) => {
+const resetSettings = () => (dispatch: AppDispatch) => {
     dispatch(gameResetSettings());
 };
 
-export const userWon = () => (dispatch: AppDispatch) => {
+const userWon = () => (dispatch: AppDispatch) => {
     dispatch(stopGame());
     dispatch(gameUserWin());
     dispatch(resetSettings());
 };
 
-export const getGameMode = () => (state: RootState) => {
+const getGameMode = () => (state: RootState) => {
     return state.game.mode;
 };
 
-export const getGameDifficulty = () => (state: RootState) => {
+const getGameDifficulty = () => (state: RootState) => {
     return state.game.difficulty;
 };
 
-export const getCountOfGames = () => (state: RootState) => {
+const getCountOfGames = () => (state: RootState) => {
     return state.game.countOfGames;
 };
 
-export const getCountOfUserWins = () => (state: RootState) => {
+const getCountOfUserWins = () => (state: RootState) => {
     return state.game.countOfUserWins;
 };
 
-export const getScene = () => (state: RootState) => {
+const getScene = () => (state: RootState) => {
     return state.game.scene;
 };
 
-export const getWhooseMove = () => (state: RootState) => {
+const getWhooseMove = () => (state: RootState) => {
     return state.game.whooseMove;
+};
+
+export const gameActions = {
+    changeMode,
+    changeDifficulty,
+    manualArrange,
+    arranged,
+    startGame,
+    changeWhooseMove,
+    stopGame,
+    resetSettings,
+    userWon,
+    getGameMode,
+    getGameDifficulty,
+    getCountOfGames,
+    getCountOfUserWins,
+    getScene,
+    getWhooseMove,
 };
 
 export default gameSlice.reducer;

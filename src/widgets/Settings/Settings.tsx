@@ -1,66 +1,46 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import Button from "../../shared/ui/Button";
 import Icons from "../../shared/ui/Icons";
-import { useAppDispatch, useAppSelector } from "../../app/store/store";
-import {
-    getTheme,
-    changeTheme,
-} from "../../app/store/serviceSlice/serviceSlice";
-import Modal from "../../shared/ui/Modal/Modal";
-import {
-    arranged,
-    changeDifficulty,
-    changeMode,
-    getCountOfGames,
-    getCountOfUserWins,
-    getScene,
-    manualArrange,
-    resetSettings,
-    startGame,
-    stopGame,
-    userWon,
-} from "../../app/store/gameSlice/gameSlice";
-import {
-    getCountOfPlacedUsersShips,
-    getUserScore,
-    placeUserShips,
-    resetUser,
-} from "../../app/store/userSlice/userSlice";
-import {
-    getRobotScore,
-    placeRobotShips,
-    resetRobot,
-} from "../../app/store/robotSlice/robotSlice";
 import Rules from "../../shared/ui/Rules";
+import Modal from "../../shared/ui/Modal/Modal";
+import { serviceActions } from "../../app/store/serviceSlice/serviceSlice";
+import { gameActions } from "../../app/store/gameSlice/gameSlice";
+import { userActions } from "../../app/store/userSlice/userSlice";
+import { robotActions } from "../../app/store/robotSlice/robotSlice";
 import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
-    const theme = useAppSelector(getTheme());
-    const scene = useAppSelector(getScene());
-    const countOfPlacedShips = useAppSelector(getCountOfPlacedUsersShips());
-    const userWins = useAppSelector(getCountOfUserWins());
-    const games = useAppSelector(getCountOfGames());
-    const userScore = useAppSelector(getUserScore());
-    const robotScore = useAppSelector(getRobotScore());
-    const dispatch = useAppDispatch();
-
     const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
     const [isResultOpen, setIsResultOpen] = useState<boolean>(false);
 
-    const modalPortal = document.getElementById("modal-portal");
+    const theme = useAppSelector(serviceActions.getTheme());
+
+    const scene = useAppSelector(gameActions.getScene());
+    const userWins = useAppSelector(gameActions.getCountOfUserWins());
+    const games = useAppSelector(gameActions.getCountOfGames());
+    const countOfPlacedShips = useAppSelector(
+        userActions.getCountOfPlacedUsersShips()
+    );
+
+    const userScore = useAppSelector(userActions.getUserScore());
+    const robotScore = useAppSelector(robotActions.getRobotScore());
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         if (userScore === 0 || robotScore === 0) {
             if (userScore > robotScore) {
-                dispatch(userWon());
+                dispatch(gameActions.userWon());
             } else {
-                dispatch(stopGame());
+                dispatch(gameActions.stopGame());
             }
 
             setIsResultOpen(true);
         }
     }, [userScore, robotScore]);
+
+    const modalPortal = document.getElementById("modal-portal");
 
     return (
         <div className={styles.container}>
@@ -94,13 +74,13 @@ const Settings = (): JSX.Element => {
                     <Icons
                         name="sun"
                         margin="10px"
-                        onClick={() => dispatch(changeTheme())}
+                        onClick={() => dispatch(serviceActions.changeTheme())}
                     />
                 ) : (
                     <Icons
                         name="moon"
                         margin="10px"
-                        onClick={() => dispatch(changeTheme())}
+                        onClick={() => dispatch(serviceActions.changeTheme())}
                     />
                 )}
                 <Icons
@@ -108,9 +88,9 @@ const Settings = (): JSX.Element => {
                     onClick={
                         scene !== "game"
                             ? () => {
-                                  dispatch(resetSettings());
-                                  dispatch(resetUser());
-                                  dispatch(resetRobot());
+                                  dispatch(gameActions.resetSettings());
+                                  dispatch(userActions.resetUser());
+                                  dispatch(robotActions.resetRobot());
                               }
                             : () => {}
                     }
@@ -120,35 +100,41 @@ const Settings = (): JSX.Element => {
                 <Button
                     content="По очереди"
                     active={scene === "chooseMode"}
-                    onClick={() => dispatch(changeMode("oneByOne"))}
+                    onClick={() => dispatch(gameActions.changeMode("oneByOne"))}
                 />
                 <Button
                     content="До промаха"
                     active={scene === "chooseMode"}
-                    onClick={() => dispatch(changeMode("toMiss"))}
+                    onClick={() => dispatch(gameActions.changeMode("toMiss"))}
                 />
                 <Button
                     content="Лёгкий"
                     active={scene === "chooseDifficulty"}
-                    onClick={() => dispatch(changeDifficulty("easy"))}
+                    onClick={() =>
+                        dispatch(gameActions.changeDifficulty("easy"))
+                    }
                 />
                 <Button
                     content="Средний"
                     active={scene === "chooseDifficulty"}
-                    onClick={() => dispatch(changeDifficulty("normal"))}
+                    onClick={() =>
+                        dispatch(gameActions.changeDifficulty("normal"))
+                    }
                 />
                 <Button
                     content="Сложный"
                     active={scene === "chooseDifficulty"}
-                    onClick={() => dispatch(changeDifficulty("hard"))}
+                    onClick={() =>
+                        dispatch(gameActions.changeDifficulty("hard"))
+                    }
                 />
                 <Button
                     content="Расставить автоматически"
                     active={scene === "chooseArrangement"}
                     onClick={() => {
-                        dispatch(placeUserShips());
-                        dispatch(placeRobotShips());
-                        dispatch(arranged());
+                        dispatch(userActions.placeUserShips());
+                        dispatch(robotActions.placeRobotShips());
+                        dispatch(gameActions.arranged());
                     }}
                 />
                 <Button
@@ -164,10 +150,10 @@ const Settings = (): JSX.Element => {
                     onClick={
                         scene === "chooseArrangement"
                             ? () => {
-                                  dispatch(placeRobotShips());
-                                  dispatch(manualArrange());
+                                  dispatch(robotActions.placeRobotShips());
+                                  dispatch(gameActions.manualArrange());
                               }
-                            : () => dispatch(arranged())
+                            : () => dispatch(gameActions.arranged())
                     }
                 />
                 <Button
@@ -175,8 +161,8 @@ const Settings = (): JSX.Element => {
                     active={scene === "starting" || scene === "game"}
                     onClick={
                         scene === "game"
-                            ? () => dispatch(stopGame())
-                            : () => dispatch(startGame())
+                            ? () => dispatch(gameActions.stopGame())
+                            : () => dispatch(gameActions.startGame())
                     }
                 />
             </div>

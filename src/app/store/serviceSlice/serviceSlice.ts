@@ -31,20 +31,27 @@ export const serviceSlice = createSlice({
 const { actions } = serviceSlice;
 const { serviceNameUpdate, serviceChangeTheme } = actions;
 
-export const setName = (payload: string) => (dispatch: AppDispatch) => {
+const setName = (payload: string) => (dispatch: AppDispatch) => {
     dispatch(serviceNameUpdate(payload));
 };
 
-export const changeTheme = () => (dispatch: AppDispatch) => {
+const changeTheme = () => (dispatch: AppDispatch) => {
     dispatch(serviceChangeTheme());
 };
 
-export const getUserName = () => (state: RootState) => {
+const getUserName = () => (state: RootState) => {
     return state.service.name;
 };
 
-export const getTheme = () => (state: RootState) => {
+const getTheme = () => (state: RootState) => {
     return state.service.theme;
+};
+
+export const serviceActions = {
+    setName,
+    changeTheme,
+    getUserName,
+    getTheme,
 };
 
 export default serviceSlice.reducer;

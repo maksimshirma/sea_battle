@@ -1,13 +1,9 @@
-import TextField from "../../shared/ui/TextField";
-import RobotBoard from "../../shared/ui/RobotBoard";
-import UserBoard from "../../shared/ui/UserBoard";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
-import { getUserScore } from "../../app/store/userSlice/userSlice";
-import {
-    getUserName,
-    setName,
-} from "../../app/store/serviceSlice/serviceSlice";
-import { getRobotScore } from "../../app/store/robotSlice/robotSlice";
+import PlayBoard from "../../shared/ui/PlayBoard";
+import TextField from "../../shared/ui/TextField";
+import { userActions } from "../../app/store/userSlice/userSlice";
+import { serviceActions } from "../../app/store/serviceSlice/serviceSlice";
+import { robotActions } from "../../app/store/robotSlice/robotSlice";
 import styles from "./PlayGround.module.scss";
 
 interface IProps {
@@ -15,14 +11,10 @@ interface IProps {
 }
 
 const PlayGround = ({ position }: IProps): JSX.Element => {
-    const name = useAppSelector(getUserName());
-    const userScore = useAppSelector(getUserScore());
-    const robotScore = useAppSelector(getRobotScore());
+    const name = useAppSelector(serviceActions.getUserName());
+    const userScore = useAppSelector(userActions.getUserScore());
+    const robotScore = useAppSelector(robotActions.getRobotScore());
     const dispatch = useAppDispatch();
-
-    const handleChange = (value: string) => {
-        dispatch(setName(value));
-    };
 
     return (
         <div className={styles.container}>
@@ -34,7 +26,9 @@ const PlayGround = ({ position }: IProps): JSX.Element => {
                                 label=""
                                 name="name"
                                 value={name}
-                                onChange={handleChange}
+                                onChange={(value: string) =>
+                                    dispatch(serviceActions.setName(value))
+                                }
                                 placeholder="Введите имя..."
                             />
                         </div>
@@ -47,7 +41,11 @@ const PlayGround = ({ position }: IProps): JSX.Element => {
                     </>
                 )}
             </div>
-            {position === "left" ? <UserBoard /> : <RobotBoard />}
+            {position === "left" ? (
+                <PlayBoard owner="user" />
+            ) : (
+                <PlayBoard owner="robot" />
+            )}
         </div>
     );
 };

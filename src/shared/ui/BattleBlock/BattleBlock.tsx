@@ -1,40 +1,37 @@
 import { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import classNames from "classnames";
-import { shotRobot } from "../../../app/store/robotSlice/robotSlice";
-import {
-    changeWhooseMove,
-    getGameMode,
-    getScene,
-    getWhooseMove,
-} from "../../../app/store/gameSlice/gameSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/store/store";
+import { robotActions } from "../../../app/store/robotSlice/robotSlice";
+import { gameActions } from "../../../app/store/gameSlice/gameSlice";
 import Icons from "../Icons";
 import styles from "./BattleBlock.module.scss";
 
 interface IProps {
     i: number;
     j: number;
-    who: "user" | "robot";
+    owner: "user" | "robot";
     value: number;
 }
 
-const BattleBlock = ({ i, j, who, value }: IProps): JSX.Element => {
+const BattleBlock = ({ i, j, owner, value }: IProps): JSX.Element => {
     const [icon, setIcon] = useState<string>("");
-    const scene = useAppSelector(getScene());
-    const mode = useAppSelector(getGameMode());
-    const whooseMove = useAppSelector(getWhooseMove());
+
+    const scene = useAppSelector(gameActions.getScene());
+    const mode = useAppSelector(gameActions.getGameMode());
+    const whooseMove = useAppSelector(gameActions.getWhooseMove());
+
     const dispatch = useAppDispatch();
 
     const handleClick = () => {
-        if (who !== "user" && whooseMove === "user") {
+        if (owner !== "user" && whooseMove === "user") {
             if (value !== 2 && value !== 3) {
                 if (mode === "oneByOne") {
-                    dispatch(shotRobot({ i, j }));
-                    dispatch(changeWhooseMove());
+                    dispatch(robotActions.shotRobot({ i, j }));
+                    dispatch(gameActions.changeWhooseMove());
                 } else {
-                    dispatch(shotRobot({ i, j }));
+                    dispatch(robotActions.shotRobot({ i, j }));
                     if (value === 4 || value === 0) {
-                        dispatch(changeWhooseMove());
+                        dispatch(gameActions.changeWhooseMove());
                     }
                 }
             }

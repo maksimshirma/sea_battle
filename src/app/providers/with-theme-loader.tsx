@@ -1,8 +1,8 @@
 import { useAppSelector } from "../store/store";
-import { getTheme } from "../store/serviceSlice/serviceSlice";
+import { serviceActions } from "../store/serviceSlice/serviceSlice";
 
 const ThemeLoaderWrapper = ({ children }: { children: React.ReactNode }) => {
-    const theme = useAppSelector(getTheme());
+    const theme = useAppSelector(serviceActions.getTheme());
 
     if (theme === "dark") {
         document.body.className = "dark-theme";

@@ -10,11 +10,11 @@
 
     border: 1px solid var(--border-blocks-color);
 
+    cursor: pointer;
+
     &:hover {
         background-color: var(--btn-active-color);
     }
-
-    cursor: pointer;
 
     .content {
         font-size: var(--font-size-normal);
@@ -23,7 +23,6 @@
 }
 
 .button_inactive {
-    @extend .button;
     background-color: var(--btn-inactive-color);
     cursor: auto;
 

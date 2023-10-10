@@ -1,13 +1,13 @@
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import classNames from "classnames";
 import { IShip } from "../../lib/constants/ship";
-import { getScene } from "../../../app/store/gameSlice/gameSlice";
+import { gameActions } from "../../../app/store/gameSlice/gameSlice";
 import { handleShipMouseDown } from "../../lib/helpers/handleShipMouseDown";
 import styles from "./Ship.module.scss";
 
 const Ship = ({ ship }: { ship: IShip }): JSX.Element | null => {
     const { id, placed, size, direction, x, y } = ship;
-    const scene = useAppSelector(getScene());
+    const scene = useAppSelector(gameActions.getScene());
     const dispatch = useAppDispatch();
 
     return (
@@ -26,7 +26,7 @@ const Ship = ({ ship }: { ship: IShip }): JSX.Element | null => {
             )}
         >
             {new Array(size).fill(0).map((_, index) => (
-                <div key={index} data-num={index} className={styles.item}></div>
+                <div key={index} className={styles.item}></div>
             ))}
         </div>
     );

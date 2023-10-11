@@ -2,12 +2,14 @@ import { AppDispatch, RootState } from "../store";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface IState {
-    name: string;
+    fistName: string;
+    secondName: string;
     theme: "light" | "dark";
 }
 
 const initialState: IState = {
-    name: "",
+    fistName: "",
+    secondName: "",
     theme: "light",
 };
 
@@ -15,8 +17,11 @@ export const serviceSlice = createSlice({
     name: "service",
     initialState,
     reducers: {
-        serviceNameUpdate: (state, action) => {
-            state.name = action.payload;
+        serviceFirstNameUpdate: (state, action) => {
+            state.fistName = action.payload;
+        },
+        serviceSecondNameUpdate: (state, action) => {
+            state.secondName = action.payload;
         },
         serviceChangeTheme: (state) => {
             if (state.theme === "light") {
@@ -29,18 +34,27 @@ export const serviceSlice = createSlice({
 });
 
 const { actions } = serviceSlice;
-const { serviceNameUpdate, serviceChangeTheme } = actions;
+const { serviceFirstNameUpdate, serviceSecondNameUpdate, serviceChangeTheme } =
+    actions;
 
-const setName = (payload: string) => (dispatch: AppDispatch) => {
-    dispatch(serviceNameUpdate(payload));
+const setFirstName = (payload: string) => (dispatch: AppDispatch) => {
+    dispatch(serviceFirstNameUpdate(payload));
+};
+
+const setSecondName = (payload: string) => (dispatch: AppDispatch) => {
+    dispatch(serviceSecondNameUpdate(payload));
 };
 
 const changeTheme = () => (dispatch: AppDispatch) => {
     dispatch(serviceChangeTheme());
 };
 
-const getUserName = () => (state: RootState) => {
-    return state.service.name;
+const getFirstUserName = () => (state: RootState) => {
+    return state.service.fistName;
+};
+
+const getSecondUserName = () => (state: RootState) => {
+    return state.service.secondName;
 };
 
 const getTheme = () => (state: RootState) => {
@@ -48,9 +62,11 @@ const getTheme = () => (state: RootState) => {
 };
 
 export const serviceActions = {
-    setName,
+    setFirstName,
+    setSecondName,
     changeTheme,
-    getUserName,
+    getFirstUserName,
+    getSecondUserName,
     getTheme,
 };
 

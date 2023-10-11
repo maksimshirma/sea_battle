@@ -24,8 +24,8 @@ export const robotSlice = createSlice({
         robotGetShoted: (state, action) => {
             const { i, j } = action.payload;
 
-            const field = [...state.field.map((el) => [...el])];
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+            const field = state.field;
+            const ships = state.ships;
 
             const { field: newField, ships: newShips } = shot(
                 field,
@@ -42,8 +42,8 @@ export const robotSlice = createSlice({
             state.ships = newShips;
         },
         robotPlacedShips: (state) => {
-            const field = [...state.field.map((el) => [...el])];
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+            const field = state.field;
+            const ships = state.ships;
 
             const { field: newField, ships: newShips } = autoPlaceShips(
                 field,

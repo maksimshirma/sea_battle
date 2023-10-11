@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
+import { firstUserActions } from "../../../app/store/firstUserSlice/firstUserSlice";
+import { secondUserActions } from "../../../app/store/secondUserSlice/secondUserSlice";
 import { robotActions } from "../../../app/store/robotSlice/robotSlice";
-import { gameActions } from "../../../app/store/gameSlice/gameSlice";
+import {
+    TWhooseMove,
+    gameActions,
+} from "../../../app/store/gameSlice/gameSlice";
 import Icons from "../Icons";
 import styles from "./BattleBlock.module.scss";
 
 interface IProps {
     i: number;
     j: number;
-    owner: "user" | "robot";
+    owner: TWhooseMove;
     value: number;
 }
 
@@ -19,20 +24,35 @@ const BattleBlock = ({ i, j, owner, value }: IProps): JSX.Element => {
     const scene = useAppSelector(gameActions.getScene());
     const mode = useAppSelector(gameActions.getGameMode());
     const whooseMove = useAppSelector(gameActions.getWhooseMove());
+    const opponent = useAppSelector(gameActions.getOpponent());
 
     const dispatch = useAppDispatch();
 
+    const changeMove = (whooseMove: TWhooseMove) => {
+        if (mode === "oneByOne") {
+            dispatch(gameActions.changeWhooseMove(whooseMove));
+        } else {
+            if (value === 4 || value === 0) {
+                dispatch(gameActions.changeWhooseMove(whooseMove));
+            }
+        }
+    };
+
     const handleClick = () => {
-        if (owner !== "user" && whooseMove === "user") {
-            if (value !== 2 && value !== 3) {
-                if (mode === "oneByOne") {
+        if (value !== 2 && value !== 3) {
+            if (opponent === "robot") {
+                if (whooseMove === "firstUser" && owner !== "firstUser") {
                     dispatch(robotActions.shotRobot({ i, j }));
-                    dispatch(gameActions.changeWhooseMove());
-                } else {
-                    dispatch(robotActions.shotRobot({ i, j }));
-                    if (value === 4 || value === 0) {
-                        dispatch(gameActions.changeWhooseMove());
-                    }
+                    changeMove("robot");
+                }
+            } else {
+                if (whooseMove === "firstUser" && owner === "secondUser") {
+                    dispatch(secondUserActions.shotUser({ i, j }));
+                    changeMove("secondUser");
+                }
+                if (whooseMove === "secondUser" && owner === "firstUser") {
+                    dispatch(firstUserActions.shotUser({ i, j }));
+                    changeMove("firstUser");
                 }
             }
         }

@@ -9,7 +9,7 @@ interface IProps {
 
 const Modal = ({ children, header, onClick }: IProps): JSX.Element => {
     return (
-        <div className={styles.rules}>
+        <div className={styles.modal}>
             <div className={styles.header}>{header}</div>
             <div className={styles.content}>{children}</div>
             <div className={styles.footer}>

@@ -1,7 +1,9 @@
+export type TDirection = "row" | "col";
+
 export interface IShip {
     id: number;
     size: number;
-    direction: "row" | "col";
+    direction: TDirection;
     placed: boolean;
     x: number;
     y: number;

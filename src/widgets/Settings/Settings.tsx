@@ -2,43 +2,84 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useAppDispatch, useAppSelector } from "../../app/store/store";
 import Button from "../../shared/ui/Button";
-import Icons from "../../shared/ui/Icons";
-import Rules from "../../shared/ui/Rules";
 import Modal from "../../shared/ui/Modal/Modal";
-import { serviceActions } from "../../app/store/serviceSlice/serviceSlice";
+import Result from "../../shared/ui/Result";
 import { gameActions } from "../../app/store/gameSlice/gameSlice";
-import { userActions } from "../../app/store/userSlice/userSlice";
+import { firstUserActions } from "../../app/store/firstUserSlice/firstUserSlice";
+import { secondUserActions } from "../../app/store/secondUserSlice/secondUserSlice";
 import { robotActions } from "../../app/store/robotSlice/robotSlice";
 import styles from "./Settings.module.scss";
 
 const Settings = (): JSX.Element => {
-    const [isRulesOpen, setIsRulesOpen] = useState<boolean>(false);
     const [isResultOpen, setIsResultOpen] = useState<boolean>(false);
 
-    const theme = useAppSelector(serviceActions.getTheme());
-
     const scene = useAppSelector(gameActions.getScene());
-    const userWins = useAppSelector(gameActions.getCountOfUserWins());
-    const games = useAppSelector(gameActions.getCountOfGames());
-    const countOfPlacedShips = useAppSelector(
-        userActions.getCountOfPlacedUsersShips()
+    const opponent = useAppSelector(gameActions.getOpponent());
+
+    const countOfPlacedFirstUserShips = useAppSelector(
+        firstUserActions.getCountOfPlacedUsersShips()
+    );
+    const countOfPlacedSecondUserShips = useAppSelector(
+        secondUserActions.getCountOfPlacedUsersShips()
     );
 
-    const userScore = useAppSelector(userActions.getUserScore());
+    const firstUserScore = useAppSelector(firstUserActions.getUserScore());
+    const secondUserScore = useAppSelector(secondUserActions.getUserScore());
     const robotScore = useAppSelector(robotActions.getRobotScore());
+
     const dispatch = useAppDispatch();
 
+    const handleAutoPlace = () => {
+        if (opponent === "robot") {
+            dispatch(robotActions.placeRobotShips());
+        }
+        if (
+            scene === "firstUserArrangement" &&
+            countOfPlacedFirstUserShips === 10
+        ) {
+            dispatch(firstUserActions.resetUser());
+        }
+        if (
+            scene === "secondUserArrangement" &&
+            countOfPlacedSecondUserShips === 10
+        ) {
+            dispatch(secondUserActions.resetUser());
+        }
+        dispatch(
+            scene === "firstUserArrangement"
+                ? firstUserActions.placeUserShips()
+                : secondUserActions.placeUserShips()
+        );
+    };
+
+    const handleSubmit = () => {
+        if (opponent === "robot") {
+            dispatch(robotActions.placeRobotShips());
+        }
+        dispatch(gameActions.arranged());
+    };
+
+    const handleStart = () => {
+        if (scene === "game") {
+            dispatch(gameActions.stopGame());
+        } else {
+            dispatch(gameActions.startGame());
+        }
+    };
+
     useEffect(() => {
-        if (userScore === 0 || robotScore === 0) {
-            if (userScore > robotScore) {
-                dispatch(gameActions.userWon());
+        if (firstUserScore === 0 || robotScore === 0 || secondUserScore === 0) {
+            setIsResultOpen(true);
+            if (
+                firstUserScore > robotScore ||
+                firstUserScore > secondUserScore
+            ) {
+                dispatch(gameActions.firstUserWin());
             } else {
                 dispatch(gameActions.stopGame());
             }
-
-            setIsResultOpen(true);
         }
-    }, [userScore, robotScore]);
+    }, [firstUserScore, secondUserScore, robotScore]);
 
     const modalPortal = document.getElementById("modal-portal");
 
@@ -50,52 +91,11 @@ const Settings = (): JSX.Element => {
                     <Modal
                         header="Игра окончена"
                         onClick={() => setIsResultOpen(false)}
-                    />,
-                    modalPortal
-                )}
-            {isRulesOpen &&
-                modalPortal &&
-                createPortal(
-                    <Modal
-                        header="Правила"
-                        onClick={() => setIsRulesOpen(false)}
                     >
-                        <Rules />
+                        <Result />
                     </Modal>,
                     modalPortal
                 )}
-            <div className={styles.icons}>
-                <Icons
-                    name="info"
-                    margin="10px"
-                    onClick={() => setIsRulesOpen((prev) => !prev)}
-                />
-                {theme === "light" ? (
-                    <Icons
-                        name="sun"
-                        margin="10px"
-                        onClick={() => dispatch(serviceActions.changeTheme())}
-                    />
-                ) : (
-                    <Icons
-                        name="moon"
-                        margin="10px"
-                        onClick={() => dispatch(serviceActions.changeTheme())}
-                    />
-                )}
-                <Icons
-                    name="reset"
-                    onClick={
-                        scene !== "game"
-                            ? () => {
-                                  dispatch(gameActions.resetSettings());
-                                  dispatch(userActions.resetUser());
-                                  dispatch(robotActions.resetRobot());
-                              }
-                            : () => {}
-                    }
-                />
-            </div>
             <div className={styles.buttons}>
                 <Button
                     content="По очереди"
@@ -106,6 +106,11 @@ const Settings = (): JSX.Element => {
                     content="До промаха"
                     active={scene === "chooseMode"}
                     onClick={() => dispatch(gameActions.changeMode("toMiss"))}
+                />
+                <Button
+                    content="Против друга"
+                    active={scene === "chooseDifficulty"}
+                    onClick={() => dispatch(gameActions.chooseFriend())}
                 />
                 <Button
                     content="Лёгкий"
@@ -130,47 +135,25 @@ const Settings = (): JSX.Element => {
                 />
                 <Button
                     content="Расставить автоматически"
-                    active={scene === "chooseArrangement"}
-                    onClick={() => {
-                        dispatch(userActions.placeUserShips());
-                        dispatch(robotActions.placeRobotShips());
-                        dispatch(gameActions.arranged());
-                    }}
+                    active={
+                        scene === "firstUserArrangement" ||
+                        scene === "secondUserArrangement"
+                    }
+                    onClick={handleAutoPlace}
                 />
                 <Button
-                    content={
-                        scene === "arrangement"
-                            ? "Принять"
-                            : "Расставить вручную"
-                    }
+                    content="Принять"
                     active={
-                        scene === "chooseArrangement" ||
-                        (scene === "arrangement" && countOfPlacedShips === 10)
+                        scene === "firstUserArrangement" ||
+                        scene === "secondUserArrangement"
                     }
-                    onClick={
-                        scene === "chooseArrangement"
-                            ? () => {
-                                  dispatch(robotActions.placeRobotShips());
-                                  dispatch(gameActions.manualArrange());
-                              }
-                            : () => dispatch(gameActions.arranged())
-                    }
+                    onClick={handleSubmit}
                 />
                 <Button
                     content={scene === "game" ? "Закончить" : "Играть"}
                     active={scene === "starting" || scene === "game"}
-                    onClick={
-                        scene === "game"
-                            ? () => dispatch(gameActions.stopGame())
-                            : () => dispatch(gameActions.startGame())
-                    }
+                    onClick={handleStart}
                 />
-            </div>
-            <div className={styles.info}>
-                <div className={styles.user}>Всего игр: {games}</div>
-                <div className={styles.score}>
-                    Счёт: {userWins}:{games - userWins}
-                </div>
             </div>
         </div>
     );

@@ -1,12 +1,16 @@
 import { AppDispatch } from "../../../app/store/store";
-import { userActions } from "../../../app/store/userSlice/userSlice";
+import { firstUserActions } from "../../../app/store/firstUserSlice/firstUserSlice";
+import { secondUserActions } from "../../../app/store/secondUserSlice/secondUserSlice";
 import { getBoardCoordinates } from "./getBoardCoordinates";
+import { TDirection } from "../constants/ship";
+import { TWhooseMove } from "../../../app/store/gameSlice/gameSlice";
 
 export const handleShipMouseDown = (
     event: React.MouseEvent,
     dispatch: AppDispatch,
     id: number,
-    placed: boolean
+    placed: boolean,
+    owner: Exclude<TWhooseMove, "robot">
 ): void => {
     event.preventDefault();
     const ship = event.currentTarget as HTMLDivElement;
@@ -30,7 +34,11 @@ export const handleShipMouseDown = (
 
     if (placed) {
         shipStatic();
-        dispatch(userActions.unplaceUserShip({ id }));
+        dispatch(
+            owner === "firstUser"
+                ? firstUserActions.unplaceUserShip(id)
+                : secondUserActions.unplaceUserShip(id)
+        );
     } else {
         document.addEventListener("mousemove", onMouseMove);
         document.addEventListener("mouseup", onMouseUp);
@@ -39,12 +47,15 @@ export const handleShipMouseDown = (
 
     function onMouseMove(event: MouseEvent): void {
         shipAbsolute();
+        const data = {
+            id,
+            x: event.clientX - shiftX,
+            y: event.clientY - shiftY,
+        };
         dispatch(
-            userActions.changeCoordinates({
-                id,
-                x: event.clientX - shiftX,
-                y: event.clientY - shiftY,
-            })
+            owner === "firstUser"
+                ? firstUserActions.changeCoordinates(data)
+                : secondUserActions.changeCoordinates(data)
         );
     }
 
@@ -53,22 +64,41 @@ export const handleShipMouseDown = (
         document.removeEventListener("mousemove", onMouseMove);
         document.removeEventListener("wheel", onWheel);
 
-        const board = getBoardCoordinates("user-board");
+        const board = getBoardCoordinates(
+            owner === "firstUser" ? "first-user-board" : "second-user-board"
+        );
+
         if (board) {
             const { startX, startY, endX, endY } = board;
             const [x, y] = [event.clientX - shiftX, event.clientY - shiftY];
             if (!(x >= startX && x <= endX && y >= startY && y <= endY)) {
                 shipStatic();
-                dispatch(userActions.changeDirection({ id, direction: "row" }));
+                const data = {
+                    id,
+                    direction: "row" as TDirection,
+                };
+                dispatch(
+                    owner === "firstUser"
+                        ? firstUserActions.changeDirection(data)
+                        : secondUserActions.changeDirection(data)
+                );
             }
         }
 
         if (!placed) {
-            dispatch(userActions.placeUserShip({ id }));
+            dispatch(
+                owner === "firstUser"
+                    ? firstUserActions.placeUserShip(id)
+                    : secondUserActions.placeUserShip(id)
+            );
         }
     }
 
     function onWheel() {
-        dispatch(userActions.changeDirection({ id }));
+        dispatch(
+            owner === "firstUser"
+                ? firstUserActions.changeDirection({ id })
+                : secondUserActions.changeDirection({ id })
+        );
     }
 };

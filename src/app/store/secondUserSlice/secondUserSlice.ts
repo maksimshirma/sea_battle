@@ -1,6 +1,6 @@
 import { AppDispatch, RootState } from "../store";
 import { createSlice } from "@reduxjs/toolkit";
-import { ships, IShip } from "../../../shared/lib/constants/ship";
+import { ships, IShip, TDirection } from "../../../shared/lib/constants/ship";
 import { field } from "../../../shared/lib/constants/field";
 import { shot } from "../../../shared/lib/helpers/shot";
 import { findPlace } from "../../../shared/lib/helpers/findPlace";
@@ -21,15 +21,15 @@ const initialState: IUser = {
     field: field,
 };
 
-export const userSlice = createSlice({
-    name: "user",
+export const secondUserSlice = createSlice({
+    name: "secondUser",
     initialState,
     reducers: {
-        userGetShoted: (state, action) => {
+        secondUserGetShoted: (state, action) => {
             const { i, j } = action.payload;
 
-            const field = [...state.field.map((el) => [...el])];
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+            const field = state.field;
+            const ships = state.ships;
 
             const { field: newField, ships: newShips } = shot(
                 field,
@@ -45,26 +45,25 @@ export const userSlice = createSlice({
             state.field = newField;
             state.ships = newShips;
         },
-        userAutoPlaceShip: (state) => {
-            const field = [...state.field.map((el) => [...el])];
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+        secondUserAutoPlaceShip: (state) => {
+            const field = state.field;
+            const ships = state.ships;
 
             const { field: newField, ships: newShips } = autoPlaceShips(
                 field,
                 ships,
-                "user-board"
+                "second-user-board"
             );
 
             state.field = newField;
             state.ships = newShips;
         },
-        userPlacedShip: (state, action) => {
-            const { id } = action.payload;
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
-            const field = [...state.field.map((el) => [...el])];
+        secondUserPlacedShip: (state, action) => {
+            const ships = state.ships;
+            const field = state.field;
 
-            const index = ships.findIndex((ship) => ship.id === id);
-            const place = findPlace(field, ships[index], "user-board");
+            const index = ships.findIndex((ship) => ship.id === action.payload);
+            const place = findPlace(field, ships[index], "second-user-board");
 
             if (place) {
                 const { startI, startJ, endI, endJ, x, y } = place;
@@ -87,13 +86,16 @@ export const userSlice = createSlice({
                 });
             }
         },
-        userUnplacedShip: (state, action) => {
-            const { id } = action.payload;
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
-            const field = [...state.field.map((el) => [...el])];
+        secondUserUnplacedShip: (state, action) => {
+            const ships = state.ships;
+            const field = state.field;
 
-            const index = ships.findIndex((ship) => ship.id === id);
-            const newField = unplaceShip(field, ships[index]);
+            const index = ships.findIndex((ship) => ship.id === action.payload);
+            const newField = unplaceShip(
+                field,
+                ships[index],
+                "second-user-board"
+            );
 
             ships[index] = {
                 ...ships[index],
@@ -108,9 +110,9 @@ export const userSlice = createSlice({
             state.field = setNotAvailableBlocks(newField, ships);
             state.ships = ships;
         },
-        userChangedShipDirection: (state, action) => {
+        secondUserChangedShipDirection: (state, action) => {
             const { id } = action.payload;
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+            const ships = state.ships;
 
             const index = ships.findIndex((ship) => ship.id === id);
             ships[index] = {
@@ -124,9 +126,9 @@ export const userSlice = createSlice({
 
             state.ships = ships;
         },
-        userChangedShipCoordinates: (state, action) => {
+        secondUserChangedShipCoordinates: (state, action) => {
             const { id, x, y } = action.payload;
-            const ships = [...state.ships.map((ship) => ({ ...ship }))];
+            const ships = state.ships;
 
             const index = ships.findIndex((ship) => ship.id === id);
             ships[index] = {
@@ -137,7 +139,7 @@ export const userSlice = createSlice({
 
             state.ships = ships;
         },
-        userReset: (state) => {
+        secondUserReset: (state) => {
             state.score = 20;
             state.ships = ships;
             state.field = field;
@@ -145,71 +147,70 @@ export const userSlice = createSlice({
     },
 });
 
-const { actions } = userSlice;
+const { actions } = secondUserSlice;
 const {
-    userGetShoted,
-    userAutoPlaceShip,
-    userPlacedShip,
-    userUnplacedShip,
-    userChangedShipDirection,
-    userChangedShipCoordinates,
-    userReset,
+    secondUserGetShoted,
+    secondUserAutoPlaceShip,
+    secondUserPlacedShip,
+    secondUserUnplacedShip,
+    secondUserChangedShipDirection,
+    secondUserChangedShipCoordinates,
+    secondUserReset,
 } = actions;
 
 const shotUser =
     (payload: { i: number; j: number }) => (dispatch: AppDispatch) => {
-        dispatch(userGetShoted(payload));
+        dispatch(secondUserGetShoted(payload));
     };
 
 const placeUserShips = () => (dispatch: AppDispatch) => {
-    dispatch(userAutoPlaceShip());
+    dispatch(secondUserAutoPlaceShip());
 };
 
-const placeUserShip = (payload: { id: number }) => (dispatch: AppDispatch) => {
-    dispatch(userPlacedShip(payload));
+const placeUserShip = (payload: number) => (dispatch: AppDispatch) => {
+    dispatch(secondUserPlacedShip(payload));
 };
 
-const unplaceUserShip =
-    (payload: { id: number }) => (dispatch: AppDispatch) => {
-        dispatch(userUnplacedShip(payload));
-    };
+const unplaceUserShip = (payload: number) => (dispatch: AppDispatch) => {
+    dispatch(secondUserUnplacedShip(payload));
+};
 
 const changeDirection =
-    (payload: { id: number; direction?: "row" | "col" }) =>
+    (payload: { id: number; direction?: TDirection }) =>
     (dispatch: AppDispatch) => {
-        dispatch(userChangedShipDirection(payload));
+        dispatch(secondUserChangedShipDirection(payload));
     };
 
 const changeCoordinates =
     (payload: { id: number; x: number; y: number }) =>
     (dispatch: AppDispatch) => {
-        dispatch(userChangedShipCoordinates(payload));
+        dispatch(secondUserChangedShipCoordinates(payload));
     };
 
 const resetUser = () => (dispatch: AppDispatch) => {
-    dispatch(userReset());
+    dispatch(secondUserReset());
 };
 
 const getUserField = () => (state: RootState) => {
-    return state.user.field;
+    return state.secondUser.field;
 };
 
 const getUserShips = () => (state: RootState) => {
-    return state.user.ships;
+    return state.secondUser.ships;
 };
 
 const getUserScore = () => (state: RootState) => {
-    return state.user.score;
+    return state.secondUser.score;
 };
 
 const getCountOfPlacedUsersShips = () => (state: RootState) => {
-    return state.user.ships.reduce(
+    return state.secondUser.ships.reduce(
         (acc, ship) => (ship.placed ? acc + 1 : acc),
         0
     );
 };
 
-export const userActions = {
+export const secondUserActions = {
     shotUser,
     placeUserShips,
     placeUserShip,
@@ -223,4 +224,4 @@ export const userActions = {
     getCountOfPlacedUsersShips,
 };
 
-export default userSlice.reducer;
+export default secondUserSlice.reducer;

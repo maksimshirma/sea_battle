@@ -1,4 +1,3 @@
-import Dock from "../../shared/ui/Dock/Dock";
 import PlayGround from "../../widgets/PlayGround";
 import Settings from "../../widgets/Settings";
 import styles from "./Game.module.scss";
@@ -8,7 +7,6 @@ const Game = (): JSX.Element => {
         <div className={styles.container}>
             <div className={styles.left_side}>
                 <PlayGround position="left" />
-                <Dock />
             </div>
             <div className={styles.mid}>
                 <Settings />

@@ -1,17 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../store";
 import { robotActions } from "../robotSlice/robotSlice";
-import { userActions } from "../userSlice/userSlice";
+import { firstUserActions } from "../firstUserSlice/firstUserSlice";
+import { secondUserActions } from "../secondUserSlice/secondUserSlice";
 
 export type TDifficulty = "easy" | "normal" | "hard";
 
 export type TMode = "oneByOne" | "toMiss";
 
+export type TWhooseMove = "firstUser" | "robot" | "secondUser";
+
+export type TOponnent = "secondUser" | "robot";
+
 export type TScene =
     | "chooseMode"
     | "chooseDifficulty"
-    | "chooseArrangement"
-    | "arrangement"
+    | "firstUserArrangement"
+    | "secondUserArrangement"
     | "starting"
     | "game"
     | "end";
@@ -22,7 +27,8 @@ interface IState {
     difficulty?: TDifficulty;
     mode: TMode;
     scene: TScene;
-    whooseMove: "user" | "robot";
+    whooseMove: TWhooseMove;
+    opponent: TOponnent;
 }
 
 const initialState: IState = {
@@ -31,7 +37,8 @@ const initialState: IState = {
     difficulty: undefined,
     mode: "oneByOne",
     scene: "chooseMode",
-    whooseMove: "user",
+    whooseMove: "firstUser",
+    opponent: "robot",
 };
 
 export const gameSlice = createSlice({
@@ -44,37 +51,46 @@ export const gameSlice = createSlice({
         },
         gameChangeDifficulty: (state, action) => {
             state.difficulty = action.payload;
-            state.scene = "chooseArrangement";
+            state.opponent = "robot";
+            state.scene = "firstUserArrangement";
         },
-        gameChoosedManualArrangement: (state) => {
-            state.scene = "arrangement";
+        gameShoosedFriend: (state) => {
+            state.opponent = "secondUser";
+            state.scene = "firstUserArrangement";
         },
         gameArranged: (state) => {
-            state.scene = "starting";
+            if (
+                state.opponent === "secondUser" &&
+                state.scene === "firstUserArrangement"
+            ) {
+                state.scene = "secondUserArrangement";
+            } else {
+                state.scene = "starting";
+            }
         },
         gameStart: (state) => {
             state.scene = "game";
-            state.whooseMove = "user";
+            state.whooseMove = "firstUser";
         },
         gameChangeWhooseMove: (state, action) => {
             if (action.payload) {
-                state.whooseMove = action.payload.whooseMove;
-            } else {
+                state.whooseMove = action.payload;
+            } else if (state.opponent === "robot") {
                 state.whooseMove =
-                    state.whooseMove === "robot" ? "user" : "robot";
+                    state.whooseMove === "robot" ? "firstUser" : "robot";
             }
         },
         gameStop: (state) => {
             state.scene = "end";
             state.countOfGames += 1;
-            state.whooseMove = "user";
+            state.whooseMove = "firstUser";
         },
         gameResetSettings: (state) => {
             state.difficulty = undefined;
             state.mode = "oneByOne";
             state.scene = "chooseMode";
         },
-        gameUserWin: (state) => {
+        gameFirstUserWin: (state) => {
             state.countOfUserWins += 1;
         },
     },
@@ -84,13 +100,13 @@ const { actions } = gameSlice;
 const {
     gameChangeMode,
     gameChangeDifficulty,
-    gameChoosedManualArrangement,
+    gameShoosedFriend,
     gameArranged,
     gameStart,
     gameChangeWhooseMove,
     gameStop,
     gameResetSettings,
-    gameUserWin,
+    gameFirstUserWin,
 } = actions;
 
 const changeMode = (payload: TMode) => (dispatch: AppDispatch) => {
@@ -101,8 +117,8 @@ const changeDifficulty = (payload: TDifficulty) => (dispatch: AppDispatch) => {
     dispatch(gameChangeDifficulty(payload));
 };
 
-const manualArrange = () => (dispatch: AppDispatch) => {
-    dispatch(gameChoosedManualArrangement());
+const chooseFriend = () => (dispatch: AppDispatch) => {
+    dispatch(gameShoosedFriend());
 };
 
 const arranged = () => (dispatch: AppDispatch) => {
@@ -113,25 +129,25 @@ const startGame = () => (dispatch: AppDispatch) => {
     dispatch(gameStart());
 };
 
-const changeWhooseMove =
-    (payload?: { whooseMove: "user" | "robot" }) => (dispatch: AppDispatch) => {
-        dispatch(gameChangeWhooseMove(payload));
-    };
+const changeWhooseMove = (payload?: TWhooseMove) => (dispatch: AppDispatch) => {
+    dispatch(gameChangeWhooseMove(payload));
+};
 
 const stopGame = () => (dispatch: AppDispatch) => {
     dispatch(gameStop());
     dispatch(resetSettings());
     dispatch(robotActions.resetRobot());
-    dispatch(userActions.resetUser());
+    dispatch(firstUserActions.resetUser());
+    dispatch(secondUserActions.resetUser());
 };
 
 const resetSettings = () => (dispatch: AppDispatch) => {
     dispatch(gameResetSettings());
 };
 
-const userWon = () => (dispatch: AppDispatch) => {
+const firstUserWin = () => (dispatch: AppDispatch) => {
     dispatch(stopGame());
-    dispatch(gameUserWin());
+    dispatch(gameFirstUserWin());
     dispatch(resetSettings());
 };
 
@@ -159,22 +175,27 @@ const getWhooseMove = () => (state: RootState) => {
     return state.game.whooseMove;
 };
 
+const getOpponent = () => (state: RootState) => {
+    return state.game.opponent;
+};
+
 export const gameActions = {
     changeMode,
     changeDifficulty,
-    manualArrange,
+    chooseFriend,
     arranged,
     startGame,
     changeWhooseMove,
     stopGame,
     resetSettings,
-    userWon,
+    firstUserWin,
     getGameMode,
     getGameDifficulty,
     getCountOfGames,
     getCountOfUserWins,
     getScene,
     getWhooseMove,
+    getOpponent,
 };
 
 export default gameSlice.reducer;

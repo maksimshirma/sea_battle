@@ -1,11 +1,19 @@
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import classNames from "classnames";
 import { IShip } from "../../lib/constants/ship";
-import { gameActions } from "../../../app/store/gameSlice/gameSlice";
+import {
+    TWhooseMove,
+    gameActions,
+} from "../../../app/store/gameSlice/gameSlice";
 import { handleShipMouseDown } from "../../lib/helpers/handleShipMouseDown";
 import styles from "./Ship.module.scss";
 
-const Ship = ({ ship }: { ship: IShip }): JSX.Element | null => {
+interface IProps {
+    ship: IShip;
+    owner: Exclude<TWhooseMove, "robot">;
+}
+
+const Ship = ({ ship, owner }: IProps): JSX.Element => {
     const { id, placed, size, direction, x, y } = ship;
     const scene = useAppSelector(gameActions.getScene());
     const dispatch = useAppDispatch();
@@ -13,9 +21,16 @@ const Ship = ({ ship }: { ship: IShip }): JSX.Element | null => {
     return (
         <div
             onMouseDown={
-                scene === "arrangement"
+                scene === "firstUserArrangement" ||
+                scene === "secondUserArrangement"
                     ? (event) =>
-                          handleShipMouseDown(event, dispatch, id, placed)
+                          handleShipMouseDown(
+                              event,
+                              dispatch,
+                              id,
+                              placed,
+                              owner
+                          )
                     : () => {}
             }
             style={{ left: x, top: y }}

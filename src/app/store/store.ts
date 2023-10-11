@@ -4,13 +4,15 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import serviceReducer from "./serviceSlice/serviceSlice";
 import gameReducer from "./gameSlice/gameSlice";
-import userReducer from "./userSlice/userSlice";
+import firstUserReducer from "./firstUserSlice/firstUserSlice";
+import secondUserReducer from "./secondUserSlice/secondUserSlice";
 import robotReducer from "./robotSlice/robotSlice";
 
 const rootReducer = combineReducers({
     service: serviceReducer,
     game: gameReducer,
-    user: userReducer,
+    firstUser: firstUserReducer,
+    secondUser: secondUserReducer,
     robot: robotReducer,
 });
 

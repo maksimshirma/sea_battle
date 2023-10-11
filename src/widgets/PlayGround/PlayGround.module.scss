@@ -5,11 +5,25 @@
 
     .info {
         display: flex;
-        justify-content: space-between;
+        align-items: center;
 
         padding: 10px;
 
         font-size: var(--font-size-normal);
         color: var(--font-main-color);
+
+        .name_left {
+            flex-grow: 1;
+        }
+
+        .score_left {
+            font-size: var(--font-size-header);
+            color: var(--font-main-color);
+        }
+
+        .score_right {
+            @extend .score_left;
+            flex-grow: 1;
+        }
     }
 }

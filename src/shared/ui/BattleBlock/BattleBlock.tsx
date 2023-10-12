@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import classNames from "classnames";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
-import { firstUserActions } from "../../../app/store/firstUserSlice/firstUserSlice";
-import { secondUserActions } from "../../../app/store/secondUserSlice/secondUserSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
 import { robotActions } from "../../../app/store/robotSlice/robotSlice";
 import {
     TWhooseMove,
@@ -47,11 +46,15 @@ const BattleBlock = ({ i, j, owner, value }: IProps): JSX.Element => {
                 }
             } else {
                 if (whooseMove === "firstUser" && owner === "secondUser") {
-                    dispatch(secondUserActions.shotUser({ i, j }));
+                    dispatch(
+                        userActions.shotUser({ person: "secondUser", i, j })
+                    );
                     changeMove("secondUser");
                 }
                 if (whooseMove === "secondUser" && owner === "firstUser") {
-                    dispatch(firstUserActions.shotUser({ i, j }));
+                    dispatch(
+                        userActions.shotUser({ person: "firstUser", i, j })
+                    );
                     changeMove("firstUser");
                 }
             }

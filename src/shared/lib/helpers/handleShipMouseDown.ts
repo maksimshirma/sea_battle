@@ -1,6 +1,5 @@
 import { AppDispatch } from "../../../app/store/store";
-import { firstUserActions } from "../../../app/store/firstUserSlice/firstUserSlice";
-import { secondUserActions } from "../../../app/store/secondUserSlice/secondUserSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
 import { getBoardCoordinates } from "./getBoardCoordinates";
 import { TDirection } from "../constants/ship";
 import { TWhooseMove } from "../../../app/store/gameSlice/gameSlice";
@@ -36,8 +35,8 @@ export const handleShipMouseDown = (
         shipStatic();
         dispatch(
             owner === "firstUser"
-                ? firstUserActions.unplaceUserShip(id)
-                : secondUserActions.unplaceUserShip(id)
+                ? userActions.unplaceUserShip({ person: "firstUser", id })
+                : userActions.unplaceUserShip({ person: "secondUser", id })
         );
     } else {
         document.addEventListener("mousemove", onMouseMove);
@@ -54,8 +53,14 @@ export const handleShipMouseDown = (
         };
         dispatch(
             owner === "firstUser"
-                ? firstUserActions.changeCoordinates(data)
-                : secondUserActions.changeCoordinates(data)
+                ? userActions.changeCoordinates({
+                      person: "firstUser",
+                      ...data,
+                  })
+                : userActions.changeCoordinates({
+                      person: "firstUser",
+                      ...data,
+                  })
         );
     }
 
@@ -79,8 +84,14 @@ export const handleShipMouseDown = (
                 };
                 dispatch(
                     owner === "firstUser"
-                        ? firstUserActions.changeDirection(data)
-                        : secondUserActions.changeDirection(data)
+                        ? userActions.changeDirection({
+                              person: "firstUser",
+                              ...data,
+                          })
+                        : userActions.changeDirection({
+                              person: "secondUser",
+                              ...data,
+                          })
                 );
             }
         }
@@ -88,8 +99,11 @@ export const handleShipMouseDown = (
         if (!placed) {
             dispatch(
                 owner === "firstUser"
-                    ? firstUserActions.placeUserShip(id)
-                    : secondUserActions.placeUserShip(id)
+                    ? userActions.placeUserShip({ person: "firstUser", id })
+                    : userActions.placeUserShip({
+                          person: "secondUser",
+                          id,
+                      })
             );
         }
     }
@@ -97,8 +111,8 @@ export const handleShipMouseDown = (
     function onWheel() {
         dispatch(
             owner === "firstUser"
-                ? firstUserActions.changeDirection({ id })
-                : secondUserActions.changeDirection({ id })
+                ? userActions.changeDirection({ person: "firstUser", id })
+                : userActions.changeDirection({ person: "secondUser", id })
         );
     }
 };

@@ -5,8 +5,7 @@ import Button from "../../shared/ui/Button";
 import Modal from "../../shared/ui/Modal/Modal";
 import Result from "../../shared/ui/Result";
 import { gameActions } from "../../app/store/gameSlice/gameSlice";
-import { firstUserActions } from "../../app/store/firstUserSlice/firstUserSlice";
-import { secondUserActions } from "../../app/store/secondUserSlice/secondUserSlice";
+import { userActions } from "../../app/store/userSlice/userSlice";
 import { robotActions } from "../../app/store/robotSlice/robotSlice";
 import styles from "./Settings.module.scss";
 
@@ -17,14 +16,18 @@ const Settings = (): JSX.Element => {
     const opponent = useAppSelector(gameActions.getOpponent());
 
     const countOfPlacedFirstUserShips = useAppSelector(
-        firstUserActions.getCountOfPlacedUsersShips()
+        userActions.getCountOfPlacedUsersShips("firstUser")
     );
     const countOfPlacedSecondUserShips = useAppSelector(
-        secondUserActions.getCountOfPlacedUsersShips()
+        userActions.getCountOfPlacedUsersShips("secondUser")
     );
 
-    const firstUserScore = useAppSelector(firstUserActions.getUserScore());
-    const secondUserScore = useAppSelector(secondUserActions.getUserScore());
+    const firstUserScore = useAppSelector(
+        userActions.getUserScore("firstUser")
+    );
+    const secondUserScore = useAppSelector(
+        userActions.getUserScore("secondUser")
+    );
     const robotScore = useAppSelector(robotActions.getRobotScore());
 
     const dispatch = useAppDispatch();
@@ -37,18 +40,18 @@ const Settings = (): JSX.Element => {
             scene === "firstUserArrangement" &&
             countOfPlacedFirstUserShips === 10
         ) {
-            dispatch(firstUserActions.resetUser());
+            dispatch(userActions.resetUser("firstUser"));
         }
         if (
             scene === "secondUserArrangement" &&
             countOfPlacedSecondUserShips === 10
         ) {
-            dispatch(secondUserActions.resetUser());
+            dispatch(userActions.resetUser("secondUser"));
         }
         dispatch(
             scene === "firstUserArrangement"
-                ? firstUserActions.placeUserShips()
-                : secondUserActions.placeUserShips()
+                ? userActions.placeUserShips("firstUser")
+                : userActions.placeUserShips("secondUser")
         );
     };
 
@@ -61,7 +64,9 @@ const Settings = (): JSX.Element => {
 
     const handleStart = () => {
         if (scene === "game") {
-            dispatch(gameActions.stopGame());
+            dispatch(
+                gameActions.endGame(opponent === "robot" ? "robot" : "none")
+            );
         } else {
             dispatch(gameActions.startGame());
         }
@@ -74,9 +79,9 @@ const Settings = (): JSX.Element => {
                 firstUserScore > robotScore ||
                 firstUserScore > secondUserScore
             ) {
-                dispatch(gameActions.firstUserWin());
+                dispatch(gameActions.endGame("firstUser"));
             } else {
-                dispatch(gameActions.stopGame());
+                dispatch(gameActions.endGame(opponent));
             }
         }
     }, [firstUserScore, secondUserScore, robotScore]);

@@ -58,7 +58,7 @@ export const handleShipMouseDown = (
                       ...data,
                   })
                 : userActions.changeCoordinates({
-                      person: "firstUser",
+                      person: "secondUser",
                       ...data,
                   })
         );

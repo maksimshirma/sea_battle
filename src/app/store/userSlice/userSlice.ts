@@ -13,7 +13,7 @@ export type TPerson = "firstUser" | "secondUser";
 
 export interface IUser {
     firstUserScore: number;
-    seconstUserScore: number;
+    secondUserScore: number;
     firstUserShips: IShip[];
     secondUserShips: IShip[];
     firstUserField: number[][];
@@ -22,7 +22,7 @@ export interface IUser {
 
 const initialState: IUser = {
     firstUserScore: 20,
-    seconstUserScore: 20,
+    secondUserScore: 20,
     firstUserShips: ships,
     secondUserShips: ships,
     firstUserField: field,
@@ -61,7 +61,7 @@ export const userSlice = createSlice({
                 state.firstUserShips = newShips;
             } else {
                 if (newField[i][j] === 2) {
-                    state.seconstUserScore -= 1;
+                    state.secondUserScore -= 1;
                 }
                 state.secondUserField = newField;
                 state.secondUserShips = newShips;
@@ -240,7 +240,7 @@ export const userSlice = createSlice({
                 state.firstUserShips = ships;
                 state.firstUserField = field;
             } else {
-                state.seconstUserScore = 20;
+                state.secondUserScore = 20;
                 state.secondUserShips = ships;
                 state.secondUserField = field;
             }
@@ -315,7 +315,7 @@ const getUserScore = (person: TPerson) => (state: RootState) => {
     if (person === "firstUser") {
         return state.user.firstUserScore;
     } else {
-        return state.user.seconstUserScore;
+        return state.user.secondUserScore;
     }
 };
 

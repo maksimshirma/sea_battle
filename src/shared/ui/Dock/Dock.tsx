@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { useAppSelector } from "../../../app/store/store";
-import { firstUserActions } from "../../../app/store/firstUserSlice/firstUserSlice";
-import { secondUserActions } from "../../../app/store/secondUserSlice/secondUserSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
 import { gameActions } from "../../../app/store/gameSlice/gameSlice";
 import Ship from "../Ship";
 import { IShip } from "../../lib/constants/ship";
@@ -12,13 +11,17 @@ interface IProps {
 }
 
 const Dock = ({ owner }: IProps): JSX.Element => {
-    const firstUserShips = useAppSelector(firstUserActions.getUserShips());
-    const secondUserShips = useAppSelector(secondUserActions.getUserShips());
+    const firstUserShips = useAppSelector(
+        userActions.getUserShips("firstUser")
+    );
+    const secondUserShips = useAppSelector(
+        userActions.getUserShips("secondUser")
+    );
     const countOfPlacedFirstUserShips = useAppSelector(
-        firstUserActions.getCountOfPlacedUsersShips()
+        userActions.getCountOfPlacedUsersShips("firstUser")
     );
     const countOfPlacedSecondUserShips = useAppSelector(
-        secondUserActions.getCountOfPlacedUsersShips()
+        userActions.getCountOfPlacedUsersShips("secondUser")
     );
 
     const scene = useAppSelector(gameActions.getScene());

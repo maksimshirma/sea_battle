@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { gameActions } from "../../../app/store/gameSlice/gameSlice";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
-import { firstUserActions } from "../../../app/store/firstUserSlice/firstUserSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
 import { getRandomBetween } from "../../lib/helpers/getRandomBetween";
 
 const Robot = (): null => {
@@ -12,7 +12,7 @@ const Robot = (): null => {
     const whooseMove = useAppSelector(gameActions.getWhooseMove());
     const scene = useAppSelector(gameActions.getScene());
 
-    const userField = useAppSelector(firstUserActions.getUserField());
+    const userField = useAppSelector(userActions.getUserField("firstUser"));
 
     const dispatch = useAppDispatch();
 
@@ -54,8 +54,11 @@ const Robot = (): null => {
     useEffect(() => {
         if (whooseMove === "robot") {
             if (mode === "oneByOne") {
+                const { i, j } = getBlock();
                 setTimeout(() => {
-                    dispatch(firstUserActions.shotUser(getBlock()));
+                    dispatch(
+                        userActions.shotUser({ person: "firstUser", i, j })
+                    );
                     dispatch(gameActions.changeWhooseMove());
                 }, 1000);
             } else {
@@ -74,7 +77,9 @@ const Robot = (): null => {
                         dispatch(gameActions.changeWhooseMove());
                         clearInterval(ref.current);
                     }
-                    dispatch(firstUserActions.shotUser({ i, j }));
+                    dispatch(
+                        userActions.shotUser({ person: "firstUser", i, j })
+                    );
                 }, 1000);
             }
         }

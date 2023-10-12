@@ -1,6 +1,5 @@
 import { useAppSelector } from "../../../app/store/store";
-import { firstUserActions } from "../../../app/store/firstUserSlice/firstUserSlice";
-import { secondUserActions } from "../../../app/store/secondUserSlice/secondUserSlice";
+import { userActions } from "../../../app/store/userSlice/userSlice";
 import { robotActions } from "../../../app/store/robotSlice/robotSlice";
 import BattleBlock from "../BattleBlock";
 import Numbering from "../Numbering";
@@ -12,8 +11,12 @@ interface IProps {
 }
 
 const PlayBoard = ({ owner }: IProps): JSX.Element => {
-    const firstUserField = useAppSelector(firstUserActions.getUserField());
-    const secondUserField = useAppSelector(secondUserActions.getUserField());
+    const firstUserField = useAppSelector(
+        userActions.getUserField("firstUser")
+    );
+    const secondUserField = useAppSelector(
+        userActions.getUserField("secondUser")
+    );
     const robotField = useAppSelector(robotActions.getRobotField());
 
     const getId = () => {

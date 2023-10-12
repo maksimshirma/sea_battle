@@ -1,8 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "../store";
 import { robotActions } from "../robotSlice/robotSlice";
-import { firstUserActions } from "../firstUserSlice/firstUserSlice";
-import { secondUserActions } from "../secondUserSlice/secondUserSlice";
+import { userActions } from "../userSlice/userSlice";
 
 export type TDifficulty = "easy" | "normal" | "hard";
 
@@ -29,6 +28,7 @@ interface IState {
     scene: TScene;
     whooseMove: TWhooseMove;
     opponent: TOponnent;
+    winner: TWhooseMove | "none";
 }
 
 const initialState: IState = {
@@ -39,6 +39,7 @@ const initialState: IState = {
     scene: "chooseMode",
     whooseMove: "firstUser",
     opponent: "robot",
+    winner: "none",
 };
 
 export const gameSlice = createSlice({
@@ -71,6 +72,7 @@ export const gameSlice = createSlice({
         gameStart: (state) => {
             state.scene = "game";
             state.whooseMove = "firstUser";
+            state.winner = "none";
         },
         gameChangeWhooseMove: (state, action) => {
             if (action.payload) {
@@ -80,18 +82,22 @@ export const gameSlice = createSlice({
                     state.whooseMove === "robot" ? "firstUser" : "robot";
             }
         },
-        gameStop: (state) => {
+        gameEnd: (state, action) => {
             state.scene = "end";
             state.countOfGames += 1;
+            state.winner = action.payload;
+            if (action.payload === "firstUser") {
+                state.countOfUserWins += 1;
+            }
+            if (action.payload === "none") {
+                state.countOfGames -= 1;
+            }
             state.whooseMove = "firstUser";
         },
         gameResetSettings: (state) => {
             state.difficulty = undefined;
             state.mode = "oneByOne";
             state.scene = "chooseMode";
-        },
-        gameFirstUserWin: (state) => {
-            state.countOfUserWins += 1;
         },
     },
 });
@@ -104,9 +110,8 @@ const {
     gameArranged,
     gameStart,
     gameChangeWhooseMove,
-    gameStop,
     gameResetSettings,
-    gameFirstUserWin,
+    gameEnd,
 } = actions;
 
 const changeMode = (payload: TMode) => (dispatch: AppDispatch) => {
@@ -133,22 +138,18 @@ const changeWhooseMove = (payload?: TWhooseMove) => (dispatch: AppDispatch) => {
     dispatch(gameChangeWhooseMove(payload));
 };
 
-const stopGame = () => (dispatch: AppDispatch) => {
-    dispatch(gameStop());
-    dispatch(resetSettings());
-    dispatch(robotActions.resetRobot());
-    dispatch(firstUserActions.resetUser());
-    dispatch(secondUserActions.resetUser());
-};
+const endGame =
+    (payload: "firstUser" | "secondUser" | "robot" | "none") =>
+    (dispatch: AppDispatch) => {
+        dispatch(gameEnd(payload));
+        dispatch(resetSettings());
+        dispatch(robotActions.resetRobot());
+        dispatch(userActions.resetUser("firstUser"));
+        dispatch(userActions.resetUser("secondUser"));
+    };
 
 const resetSettings = () => (dispatch: AppDispatch) => {
     dispatch(gameResetSettings());
-};
-
-const firstUserWin = () => (dispatch: AppDispatch) => {
-    dispatch(stopGame());
-    dispatch(gameFirstUserWin());
-    dispatch(resetSettings());
 };
 
 const getGameMode = () => (state: RootState) => {
@@ -179,6 +180,10 @@ const getOpponent = () => (state: RootState) => {
     return state.game.opponent;
 };
 
+const getWinner = () => (state: RootState) => {
+    return state.game.winner;
+};
+
 export const gameActions = {
     changeMode,
     changeDifficulty,
@@ -186,9 +191,8 @@ export const gameActions = {
     arranged,
     startGame,
     changeWhooseMove,
-    stopGame,
     resetSettings,
-    firstUserWin,
+    endGame,
     getGameMode,
     getGameDifficulty,
     getCountOfGames,
@@ -196,6 +200,7 @@ export const gameActions = {
     getScene,
     getWhooseMove,
     getOpponent,
+    getWinner,
 };
 
 export default gameSlice.reducer;

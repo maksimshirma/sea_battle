@@ -6,8 +6,7 @@ import Icons from "../../shared/ui/Icons";
 import Rules from "../../shared/ui/Rules";
 import { serviceActions } from "../../app/store/serviceSlice/serviceSlice";
 import { gameActions } from "../../app/store/gameSlice/gameSlice";
-import { firstUserActions } from "../../app/store/firstUserSlice/firstUserSlice";
-import { secondUserActions } from "../../app/store/secondUserSlice/secondUserSlice";
+import { userActions } from "../../app/store/userSlice/userSlice";
 import { robotActions } from "../../app/store/robotSlice/robotSlice";
 import styles from "./ServiceSettings.module.scss";
 
@@ -21,8 +20,8 @@ const ServiceSettings = (): JSX.Element => {
     const handleReset = () => {
         if (scene !== "game") {
             dispatch(gameActions.resetSettings());
-            dispatch(firstUserActions.resetUser());
-            dispatch(secondUserActions.resetUser());
+            dispatch(userActions.resetUser("firstUser"));
+            dispatch(userActions.resetUser("secondUser"));
             dispatch(robotActions.resetRobot());
         }
     };

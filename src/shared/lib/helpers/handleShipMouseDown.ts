@@ -7,6 +7,7 @@ import { TWhooseMove } from "../../../app/store/gameSlice/gameSlice";
 export const handleShipMouseDown = (
     event: React.MouseEvent,
     dispatch: AppDispatch,
+    setCoordinates: ({ x, y }: { x: number; y: number }) => void,
     id: number,
     placed: boolean,
     owner: Exclude<TWhooseMove, "robot">
@@ -15,9 +16,9 @@ export const handleShipMouseDown = (
     const ship = event.currentTarget as HTMLDivElement;
 
     const shipStatic = () => {
-        ship.style.margin = "5px";
-        ship.style.float = "left";
-        ship.style.position = "static";
+        ship.style.removeProperty("margin");
+        ship.style.removeProperty("float");
+        ship.style.removeProperty("position");
     };
 
     const shipAbsolute = () => {
@@ -46,6 +47,17 @@ export const handleShipMouseDown = (
 
     function onMouseMove(event: MouseEvent): void {
         shipAbsolute();
+        setCoordinates({
+            x: event.clientX - shiftX,
+            y: event.clientY - shiftY,
+        });
+    }
+
+    function onMouseUp(event: MouseEvent): void {
+        document.removeEventListener("mouseup", onMouseUp);
+        document.removeEventListener("mousemove", onMouseMove);
+        document.removeEventListener("wheel", onWheel);
+
         const data = {
             id,
             x: event.clientX - shiftX,
@@ -62,12 +74,6 @@ export const handleShipMouseDown = (
                       ...data,
                   })
         );
-    }
-
-    function onMouseUp(event: MouseEvent): void {
-        document.removeEventListener("mouseup", onMouseUp);
-        document.removeEventListener("mousemove", onMouseMove);
-        document.removeEventListener("wheel", onWheel);
 
         const board = getBoardCoordinates(
             owner === "firstUser" ? "first-user-board" : "second-user-board"

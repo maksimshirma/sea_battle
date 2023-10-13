@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import classNames from "classnames";
 import { IShip } from "../../lib/constants/ship";
@@ -15,8 +16,13 @@ interface IProps {
 
 const Ship = ({ ship, owner }: IProps): JSX.Element => {
     const { id, placed, size, direction, x, y } = ship;
+    const [coordinates, setCoordinates] = useState({ x, y });
     const scene = useAppSelector(gameActions.getScene());
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        setCoordinates({ x, y });
+    }, [placed, x, y]);
 
     return (
         <div
@@ -27,13 +33,14 @@ const Ship = ({ ship, owner }: IProps): JSX.Element => {
                           handleShipMouseDown(
                               event,
                               dispatch,
+                              setCoordinates,
                               id,
                               placed,
                               owner
                           )
                     : () => {}
             }
-            style={{ left: x, top: y }}
+            style={{ left: coordinates.x, top: coordinates.y }}
             className={classNames(
                 styles.container,
                 direction === "row" ? styles.flex : null,

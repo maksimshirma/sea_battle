@@ -21,18 +21,18 @@ body.light-theme {
     --btn-active-color: #adadad;
     --btn-inactive-color: #d8d8d8;
     --font-main-color: #000;
-    --border-blocks-color: #2b00ff;
+    --border-blocks-color: #467fe4;
     --hitted-block-color: #cc0000;
 }
 
 body.dark-theme {
-    --bg-body-main-color: #242424;
-    --bg-main-color: #474747;
-    --btn-main-color: #474747;
-    --btn-active-color: #5e5e5e;
-    --btn-inactive-color: #303030;
-    --font-main-color: #fff;
-    --border-blocks-color: #2b00ff;
+    --bg-body-main-color: #1b1b1d;
+    --bg-main-color: #1b1b1d;
+    --btn-main-color: #3f3f41;
+    --btn-active-color: #5a5a5a;
+    --btn-inactive-color: #2b2b2d;
+    --font-main-color: #f3f3f3;
+    --border-blocks-color: #f2d82b;
     --hitted-block-color: #cc0000;
 
     background-color: var(--bg-body-main-color);

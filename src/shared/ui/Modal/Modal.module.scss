@@ -11,8 +11,6 @@
     display: flex;
     flex-direction: column;
 
-    overflow-y: scroll;
-
     .header {
         font-size: var(--font-size-header);
         color: var(--font-main-color);

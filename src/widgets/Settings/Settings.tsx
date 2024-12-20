@@ -86,6 +86,15 @@ const Settings = (): JSX.Element => {
         }
     }, [firstUserScore, secondUserScore, robotScore]);
 
+    useEffect(() => {
+        if (scene === "chooseMode") {
+            dispatch(gameActions.changeMode("toMiss"));
+        }
+        if (scene === "chooseDifficulty") {
+            dispatch(gameActions.changeDifficulty("normal"));
+        }
+    }, [scene, dispatch]);
+
     const modalPortal = document.getElementById("modal-portal");
 
     return (
@@ -102,42 +111,42 @@ const Settings = (): JSX.Element => {
                     modalPortal
                 )}
             <div className={styles.buttons}>
-                <Button
+                {/* <Button
                     content="По очереди"
                     active={scene === "chooseMode"}
                     onClick={() => dispatch(gameActions.changeMode("oneByOne"))}
-                />
-                <Button
+                /> */}
+                {/* <Button
                     content="До промаха"
                     active={scene === "chooseMode"}
                     onClick={() => dispatch(gameActions.changeMode("toMiss"))}
-                />
-                <Button
+                /> */}
+                {/* <Button
                     content="Против друга"
                     active={scene === "chooseDifficulty"}
                     onClick={() => dispatch(gameActions.chooseFriend())}
-                />
-                <Button
+                /> */}
+                {/* <Button
                     content="Лёгкий"
                     active={scene === "chooseDifficulty"}
                     onClick={() =>
                         dispatch(gameActions.changeDifficulty("easy"))
                     }
-                />
-                <Button
+                /> */}
+                {/* <Button
                     content="Средний"
                     active={scene === "chooseDifficulty"}
                     onClick={() =>
                         dispatch(gameActions.changeDifficulty("normal"))
                     }
-                />
-                <Button
+                /> */}
+                {/* <Button
                     content="Сложный"
                     active={scene === "chooseDifficulty"}
                     onClick={() =>
                         dispatch(gameActions.changeDifficulty("hard"))
                     }
-                />
+                /> */}
                 <Button
                     content="Расставить автоматически"
                     active={
